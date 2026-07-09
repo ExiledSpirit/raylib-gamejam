@@ -24,10 +24,10 @@ jobs:
       PROJECT_REPO_NAME: ${{ github.event.repository.name }}
       PROJECT_BUILD_PATH: ${{ github.event.repository.name }}/src
       PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_macos
-      PROJECT_RESOURCES_SRC_PATH: src/resources
-      PROJECT_RESOURCES_DST_PATH: resources
+      PROJECT_RESOURCES_SRC_PATH: src/assets
+      PROJECT_RESOURCES_DST_PATH: assets
       PROJECT_CUSTOM_FLAGS: ""
-      PROJECT_RESOURCES_PATH: resources
+      PROJECT_RESOURCES_PATH: assets
 
     steps:
     - name: Checkout this repo

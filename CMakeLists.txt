@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.24...3.30)
-project(raylib-game-template)
+
+project(raylib-game-template LANGUAGES C CXX)
 
 include(FetchContent)
 
-# Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Dependencies
 set(RAYLIB_VERSION 6.0)
@@ -16,44 +19,82 @@ FetchContent_Declare(
     FIND_PACKAGE_ARGS
 )
 
-FetchContent_MakeAvailable(raylib)
+FetchContent_Declare(
+    entt
+    GIT_REPOSITORY "https://github.com/skypjack/entt.git"
+    GIT_TAG v3.15.0
+    GIT_PROGRESS TRUE
+)
+
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+    GIT_TAG v3.11.3
+    GIT_PROGRESS TRUE
+)
+
+FetchContent_Declare(
+    box2d
+    GIT_REPOSITORY "https://github.com/erincatto/box2d.git"
+    GIT_TAG v3.1.1
+    GIT_PROGRESS TRUE
+)
+
+FetchContent_MakeAvailable(
+    raylib
+    entt
+    nlohmann_json
+    box2d
+)
 
 # Our Project
 add_executable(${PROJECT_NAME})
+
+add_subdirectory(engine)
 add_subdirectory(src)
 
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        engine
+)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
+)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+set_property(TARGET ${PROJECT_NAME} PROPERTY
+    VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
 
-if ("${PLATFORM}" STREQUAL "Web")
-    add_custom_command(
-        TARGET ${PROJECT_NAME} PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/../resources
-    )
-    #DEPENDS ${PROJECT_NAME}
-else()
+# Desktop assets
+if (NOT "${PLATFORM}" STREQUAL "Web")
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/src/assets
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
     )
-    #DEPENDS ${PROJECT_NAME}
 endif()
-
-#set(raylib_VERBOSE 1)
-target_link_libraries(${PROJECT_NAME} raylib)
 
 # Web Configurations
 if ("${PLATFORM}" STREQUAL "Web")
-    # Tell Emscripten to build an example.html file.
-    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
-    target_link_options(${PROJECT_NAME} PUBLIC -sUSE_GLFW=3 PUBLIC --preload-file resources)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        SUFFIX ".html"
+    )
+
+    target_link_options(${PROJECT_NAME}
+        PRIVATE
+            -sUSE_GLFW=3
+            "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/src/assets@assets"
+    )
 endif()
 
-# Checks if OSX and links appropriate frameworks (Only required on MacOS)
+# macOS frameworks
 if (APPLE)
-    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+            "-framework IOKit"
+            "-framework Cocoa"
+            "-framework OpenGL"
+    )
 endif()
