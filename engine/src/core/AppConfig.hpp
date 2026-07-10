@@ -7,8 +7,8 @@ struct AppConfig
     int windowWidth = 1600;
     int windowHeight = 900;
 
-    int internalWidth = 320;
-    int internalHeight = 180;
+    int internalWidth = 512;
+    int internalHeight = 288;
 
     const char* title = "Raylib Gamejam Engine";
 

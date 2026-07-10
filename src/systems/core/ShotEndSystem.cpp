@@ -77,7 +77,7 @@ void ShotEndSystem(World& world)
         }
         else
         {
-            run.phase = RunPhase::WaitingForShot;
+            run.phase = RunPhase::WaitingToDropBall;
         }
 
         return;

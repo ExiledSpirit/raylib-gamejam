@@ -4,10 +4,13 @@
 
 #include "../ecs/resources/TimeResource.hpp"
 
+#include <raylib.h>
 #include <box2d/box2d.h>
 
 void PhysicsStepSystem(World& world)
 {
+    TraceLog(LOG_INFO, "DIDNT BREAK");
+
     auto& physics = world.GetResource<PhysicsWorldResource>();
     auto& time = world.GetResource<TimeResource>();
 

@@ -1,0 +1,42 @@
+#include "LastStrikeAnimationSystem.hpp"
+#include <ecs/resources/TimeResource.hpp>
+#include "../../resources/StrikeZonesResource.hpp"
+#include "../../resources/RunResource.hpp"
+#include "../../utils/PhaseHelper.hpp"
+#include "../../factories/LaunchedBallFactory.hpp"
+
+void LastStrikeAnimationSystem(World& world)
+{
+    auto& run = world.GetResource<RunResource>();
+
+    if(run.phase != RunPhase::LastStrikeAnimation)
+    {
+        return;
+    }
+
+    auto& time = world.GetResource<TimeResource>();
+    auto& strike = world.GetResource<PlayerStrikeResource>();
+
+    strike.lastStrikeTimer += time.deltaTime;
+
+    if (!strike.lastStrikeSfxPlayed) {
+        // player animation = last_strike_animation
+        // AudioHelper::PlaySfx(AudioIds::LastStrike);
+        strike.lastStrikeSfxPlayed = true;
+    }
+
+    if(strike.lastStrikeTimer < strike.lastStrikeDuration)
+    {
+        return;
+    }
+
+    CreateLaunchedBallFromStrike(world);
+    SetRunPhase(run, RunPhase::BallRunning);
+
+    float finalPower =
+        strike.basePower * strike.finalPowerMultiplier;
+
+    // CreateLaunchedBall(world, strike.playerPosition, finalPower);
+
+    run.phase = RunPhase::BallRunning;
+}

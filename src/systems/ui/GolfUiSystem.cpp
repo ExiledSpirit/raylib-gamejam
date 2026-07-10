@@ -11,7 +11,7 @@ void GolfUiSystem(World& world)
     DrawText(TextFormat("Score: %d / %d", run.currentScore, run.requiredScore), 8, 8, 10, WHITE);
     DrawText(TextFormat("Balls: %d", run.ballsRemaining), 8, 20, 10, WHITE);
 
-    if(run.phase == RunPhase::WaitingForShot)
+    if(run.phase == RunPhase::BallFalling)
     {
         DrawText("Hold SPACE", 8, 34, 10, YELLOW);
     }

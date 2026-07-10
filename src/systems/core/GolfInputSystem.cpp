@@ -12,7 +12,7 @@ void GolfInputSystem(World& world)
 {
     auto& run = world.GetResource<RunResource>();
 
-    if(run.phase != RunPhase::WaitingForShot)
+    if(run.phase != RunPhase::BallFalling)
     {
         return;
     }

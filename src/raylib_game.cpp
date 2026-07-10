@@ -5,13 +5,29 @@
 
 /** SYSTEMS */
 #include <physics/PhysicsStepSystem.hpp>
+#include "./systems/sfx/UpdateMusicSystem.hpp"
+#include "./systems/startup/GameStartupSystem.hpp"
 #include "./systems/ui/MainMenuSystem.hpp"
 #include "./systems/core/ShotEndSystem.hpp"
 #include "./systems/core/GolfInputSystem.hpp"
 #include "./systems/core/BallScoreSystem.hpp"
 #include "./systems/core/BallPhysicsSyncSystem.hpp"
-#include "./systems/render/GolfRenderSystem.hpp"
+
+#include "./systems/core/StartDropBallSystem.hpp"
+#include "./systems/core/FallingBallStrikeSystem.hpp"
+#include "./systems/core/FirstStrikeAnimationSystem.hpp"
+#include "./systems/core/SkillCheckSystem.hpp"
+#include "./systems/core/LastStrikeAnimationSystem.hpp"
+
+#include "./systems/animation/PlayerAnimationSystem.hpp"
+#include "./systems/animation/AnimationSystem.hpp"
+
+#include "./systems/render/WorldRenderPassSystem.hpp"
 #include "./systems/ui/GolfUiSystem.hpp"
+#include "./systems/ui/SkillCheckUiSystem.hpp"
+
+#include "./systems/debugs/DebugUiSystem.hpp"
+#include "./systems/debugs/DebugIncomingBallRenderSystem.hpp"
 
 #include "./resources/LauncherResource.hpp"
 #include "./resources/RunResource.hpp"
@@ -21,26 +37,44 @@ int main()
 {
     AppConfig config = AppConfig();
     config.title = "NONAME";
-    config.internalHeight = 180;
-    config.internalWidth = 320;
+    config.internalHeight = 288;
+    config.internalWidth = 512;
     auto app = App(config);
 
     ConfigureInput(app.GetWorld());
     InitializeResources(app.GetWorld());
-    // app.AddSystem(Stage::RenderUi, MainMenuUiSystem);
-    // RegisterSystems(app.GetWorld());
 
     app.GetWorld().InsertResource<RunResource>();
     app.GetWorld().InsertResource<LauncherResource>();
 
-    app.AddSystem(Stage::Update, GolfInputSystem);
+    app.AddStartupSystem(GameStartupSystem);
+
+    app.AddSystem(Stage::Update, StartDropBallSystem);
+    app.AddSystem(Stage::Update, FallingBallStrikeSystem);
+    app.AddSystem(Stage::Update, FirstStrikeAnimationSystem);
+    app.AddSystem(Stage::Update, SkillCheckSystem);
+    app.AddSystem(Stage::Update, LastStrikeAnimationSystem);
+
+    app.AddSystem(Stage::Update, PlayerAnimationSystem);
+    app.AddSystem(Stage::Update, AnimationSystem);
+
+    app.AddSystem(Stage::Update, UpdateMusicSystem);
+
     app.AddSystem(Stage::Update, PhysicsStepSystem);
     app.AddSystem(Stage::Update, BallPhysicsSyncSystem);
     app.AddSystem(Stage::Update, BallScoreSystem);
     app.AddSystem(Stage::Update, ShotEndSystem);
 
-    app.AddSystem(Stage::RenderScene, GolfRenderSystem);
-    app.AddSystem(Stage::RenderUi, GolfUiSystem);
+    // app.AddSystem(Stage::Update, PhysicsStepSystem);
+    // app.AddSystem(Stage::Update, BallPhysicsSyncSystem);
+    // app.AddSystem(Stage::Update, BallScoreSystem);
+    // app.AddSystem(Stage::Update, ShotEndSystem);
+
+    app.AddSystem(Stage::RenderScene, WorldRenderPassSystem);
+    app.AddSystem(Stage::RenderScene, DebugIncomingBallRenderSystem); // Debug
+
+    app.AddSystem(Stage::RenderUi, SkillCheckUiSystem);
+    app.AddSystem(Stage::RenderUi, DebugUiSystem);
 
     app.Run();
 

@@ -5,7 +5,7 @@
 struct Transform2D
 {
     // Position in internal game pixels, not Box2D meters.
-    // Example: 320x180 game space.
+    // Example: 512x288 game space.
     Vector2 position{0.0f, 0.0f};
 
     // Store rotation in radians because Box2D uses radians.

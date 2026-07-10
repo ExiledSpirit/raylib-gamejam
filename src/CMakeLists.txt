@@ -17,3 +17,15 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}"
 )
+if (EMSCRIPTEN OR "${PLATFORM}" STREQUAL "Web")
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            PLATFORM_WEB
+            ASSETS_PATH=\"assets/\"
+    )
+else()
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            ASSETS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/assets/\"
+    )
+endif()
