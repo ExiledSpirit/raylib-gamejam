@@ -15,4 +15,22 @@ namespace AnimationIds
 
     inline const std::string PlayerLastStrike =
         "player_last_strike";
+
+    inline const std::string PlayerWhiff =
+        "player_whiff";
+        
+    inline const std::string PlayerIdleRight =
+        "player_idle_right";
+
+    inline const std::string PlayerReadyRight =
+        "player_ready_right";
+
+    inline const std::string PlayerFirstStrikeRight =
+        "player_first_strike_right";
+
+    inline const std::string PlayerLastStrikeRight =
+        "player_last_strike_right";
+
+    inline const std::string PlayerWhiffRight =
+        "player_whiff_right";
 }

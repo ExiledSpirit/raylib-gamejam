@@ -1,41 +1,28 @@
 #include "WorldRenderPassSystem.hpp"
 
-#include <raylib.h>
+#include "../../resources/GameCameraResource.hpp"
+#include "../../utils/GameCameraUtils.hpp"
 
-// #include "BackgroundRenderSystem.hpp"
+// include your render systems/helpers here
 #include "TileRenderSystem.hpp"
 #include "SpriteRenderSystem.hpp"
-// #include "DeathParticleRenderSystem.hpp"
-// #include "../ui/MenuBackgroundRenderSystem.hpp"
 
-// #include "../../resources/RenderTextureResources.hpp"
-#include <ecs/resources/RenderTextureResources.hpp>
-#include "../../resources/GameStateResource.hpp"
+#include <raylib.h>
 
 void WorldRenderPassSystem(World& world)
 {
-    auto& render =
-        world.GetResource<RenderTextureResources>();
+    auto& camera = world.GetResource<GameCameraResource>();
 
-    auto& gameState =
-        world.GetResource<GameStateResource>();
+    Camera2D camera2D = BuildRaylibCamera2D(
+        camera,
+        512,
+        288
+    );
 
-    // if(ShouldRenderMenuBackground(gameState.screen))
-    // {
-    //     MenuBackgroundRenderSystem(world);
-    //     EndTextureMode();
-    //     return;
-    // }
-
-    // if(!gameState.levelLoaded)
-    // {
-    //     EndTextureMode();
-    //     return;
-    // }
-
-    // BackgroundRenderSystem(world);
-    // TileRenderSystem(world);
+    BeginMode2D(camera2D);
     TileRenderSystem(world);
+
     SpriteRenderSystem(world);
-    // DeathParticleRenderSystem(world);
+
+    EndMode2D();
 }

@@ -4,8 +4,75 @@
 #include "../../utils/AnimationHelper.hpp"
 #include "../../const/AnimationIds.hpp"
 #include "../../resources/RunResource.hpp"
+#include "../../resources/StrikeZonesResource.hpp"
 
 #include <ecs/components/Sprite.hpp>
+
+#include <cmath>
+#include <string>
+
+static bool IsFacingRight(float facingRadians)
+{
+    return std::cos(facingRadians) > 0.0f;
+}
+
+static std::string GetPlayerAnimationId(
+    RunPhase phase,
+    bool facingRight
+)
+{
+    switch(phase)
+    {
+        case RunPhase::WaitingToDropBall:
+        case RunPhase::BallRunning:
+        case RunPhase::ShotFinished:
+        case RunPhase::MapWon:
+        case RunPhase::MapLost:
+        {
+            return facingRight
+                ? AnimationIds::PlayerIdleRight
+                : AnimationIds::PlayerIdle;
+            break;
+        }
+
+        case RunPhase::BallFalling:
+        {
+            return facingRight
+                ? AnimationIds::PlayerReadyRight
+                : AnimationIds::PlayerReady;
+            break;
+        }
+
+        case RunPhase::BallMissed:
+        {
+            return facingRight
+                ? AnimationIds::PlayerWhiffRight
+                : AnimationIds::PlayerWhiff;
+            break;
+        }
+
+        case RunPhase::FirstStrikeAnimation:
+        case RunPhase::SkillChecks:
+        {
+            return facingRight
+                ? AnimationIds::PlayerFirstStrikeRight
+                : AnimationIds::PlayerFirstStrike;
+            break;
+        }
+
+        case RunPhase::LastStrikeAnimation:
+        {
+            return facingRight
+                ? AnimationIds::PlayerLastStrikeRight
+                : AnimationIds::PlayerLastStrike;
+            break;
+        }
+    }
+
+    return facingRight
+        ? AnimationIds::PlayerIdleRight
+        : AnimationIds::PlayerIdle;
+}
 
 void PlayerAnimationSystem(World& world)
 {
@@ -14,6 +81,12 @@ void PlayerAnimationSystem(World& world)
 
     auto& run =
         world.GetResource<RunResource>();
+
+    auto& strike =
+        world.GetResource<PlayerStrikeResource>();
+
+    bool facingRight =
+        IsFacingRight(strike.facingRadians);
 
     auto view =
         world.registry.view<
@@ -24,76 +97,15 @@ void PlayerAnimationSystem(World& world)
     {
         (void)entity;
 
+        // Since you now have mirrored sprites as separate animations,
+        // keep flipX disabled.
         sprite.flipX = false;
 
         std::string animationId =
-            AnimationIds::PlayerIdle;
-
-        switch(run.phase)
-        {
-            case RunPhase::WaitingToDropBall:
-            {
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-
-            case RunPhase::BallFalling:
-            {
-                animationId = AnimationIds::PlayerIdle;
-                // animationId = AnimationIds::PlayerReady;
-                break;
-            }
-
-            case RunPhase::BallMissed: // Missed
-            {
-                animationId = AnimationIds::PlayerIdle;
-            }
-
-            case RunPhase::FirstStrikeAnimation: // Good or Great
-            {
-                animationId = AnimationIds::PlayerIdle;
-                // animationId = AnimationIds::PlayerFirstStrike;
-                break;
-            }
-
-            case RunPhase::SkillChecks: // Missed/ Great/ Good
-            {
-                animationId = AnimationIds::PlayerIdle;
-                // animationId = AnimationIds::PlayerFirstStrike;
-                break;
-            }
-
-            case RunPhase::LastStrikeAnimation: // Homerun
-            {
-                // animationId = AnimationIds::PlayerLastStrike;
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-
-            case RunPhase::BallRunning: // Multiplier
-            {
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-
-            case RunPhase::ShotFinished: // Score counting
-            {
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-
-            case RunPhase::MapWon: // Gold counting
-            {
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-
-            case RunPhase::MapLost: // Slowed version of soundtrack
-            {
-                animationId = AnimationIds::PlayerIdle;
-                break;
-            }
-        }
+            GetPlayerAnimationId(
+                run.phase,
+                facingRight
+            );
 
         PlayAnimation(
             animation,

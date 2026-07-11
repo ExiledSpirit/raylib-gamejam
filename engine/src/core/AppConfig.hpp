@@ -12,6 +12,6 @@ struct AppConfig
 
     const char* title = "Raylib Gamejam Engine";
 
-    int targetFps = 120;
+    int targetFps = 60;
     int exitKey = KEY_APOSTROPHE;
 };

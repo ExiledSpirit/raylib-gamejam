@@ -4,6 +4,8 @@ namespace AudioIds
 {
     constexpr auto SoundTrack_01 = "soundtrack_01";
 
+    constexpr auto Whiff = "whiff";
+
     constexpr auto FirstStrike = "first_strike";
 
     constexpr auto LastStrike = "last_strike";

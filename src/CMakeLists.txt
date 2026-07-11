@@ -26,6 +26,6 @@ if (EMSCRIPTEN OR "${PLATFORM}" STREQUAL "Web")
 else()
     target_compile_definitions(${PROJECT_NAME}
         PRIVATE
-            ASSETS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/assets/\"
+            ASSETS_PATH=\"assets/\"
     )
 endif()

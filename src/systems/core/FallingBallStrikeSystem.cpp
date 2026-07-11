@@ -8,6 +8,7 @@
 
 #include "../../resources/RunResource.hpp"
 #include "../../resources/StrikeZonesResource.hpp"
+#include "../../utils/AudioHelper.hpp"
 
 #include "../../utils/PhaseHelper.hpp"
 
@@ -46,6 +47,8 @@ static void LoseStrike(World& world, entt::entity incomingEntity)
     world.registry.destroy(incomingEntity);
 
     SetRunPhase(run, RunPhase::BallMissed);
+    
+    AudioHelper::PlaySfx(AudioIds::Whiff, 1.0f, 1.0f);
 }
 
 void FallingBallStrikeSystem(World& world)

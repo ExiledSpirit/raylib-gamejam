@@ -4,6 +4,8 @@
 #include "../../resources/RunResource.hpp"
 #include "../../resources/StrikeZonesResource.hpp"
 #include "../../resources/SkillCheckResource.hpp"
+#include "../../utils/AudioHelper.hpp"
+#include "../../const/AudioIds.hpp"
 
 void FirstStrikeAnimationSystem(World& world)
 {
@@ -30,7 +32,7 @@ void FirstStrikeAnimationSystem(World& world)
 
         case RunPhase::BallMissed:
         {
-            if(run.phaseTimer >= 0.45f)
+            if(run.phaseTimer >= 1.0f)
             {
                 SetRunPhase(run, RunPhase::WaitingToDropBall);
             }

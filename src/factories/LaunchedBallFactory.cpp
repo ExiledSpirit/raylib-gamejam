@@ -61,6 +61,8 @@ static b2BodyId CreateBallBody(
     shapeDef.density = 1.0f;
     shapeDef.material.friction = 0.2f;
     shapeDef.material.restitution = 0.9f;
+    shapeDef.enableContactEvents = true;
+    shapeDef.enableHitEvents = true;
 
     b2Circle circle{};
     circle.center = b2Vec2{0.0f, 0.0f};

@@ -28,6 +28,7 @@ public:
         
         LoadSfx(AudioIds::MenuMove, "assets/audio/menu_move.wav");
         LoadSfx(AudioIds::MenuSelect, "assets/audio/menu_select.wav");
+        LoadSfx(AudioIds::Whiff, std::string(ASSETS_PATH) + "/audio/whiff.wav");
 
         initialized = true;
     }
@@ -163,11 +164,13 @@ public:
             return;
         }
 
-        if(volume >= 0.0f)
-        {
-            musicVolume =
-                std::clamp(volume, 0.0f, 1.0f);
-        }
+        // if(volume >= 0.0f)
+        // {
+        //     musicVolume =
+        //         std::clamp(volume, 0.0f, 3.0f);
+        // }
+
+        musicVolume = volume;
 
         Music& music =
             it->second;
@@ -293,7 +296,7 @@ private:
 
     inline static std::string currentMusicId;
 
-    inline static float musicVolume = 1.f;
+    inline static float musicVolume = 3.f;
 
     inline static bool initialized = false;
     inline static bool ownsAudioDevice = false;

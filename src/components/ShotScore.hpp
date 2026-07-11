@@ -4,13 +4,14 @@
 
 struct ShotScore
 {
-    float distanceMeters = 0.0f;
     Vector2 previousPosition{};
 
-    int wallHits = 0;
-    float wallHitCooldown = 0.0f;
+    float distanceMeters = 0.0f;
 
     int chips = 0;
+    int lastDisplayedChips = 0;
+
+    int wallHits = 0;
     int mult = 1;
     int finalScore = 0;
 

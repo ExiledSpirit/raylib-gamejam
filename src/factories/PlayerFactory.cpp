@@ -33,7 +33,7 @@ entt::entity CreatePlayer(
         world.registry.create();
 
     world.registry.emplace<Player>(entity);
-    world.registry.emplace<Sprite>(entity);
+    world.registry.emplace<Sprite>(entity, Sprite{.pivot={.x=43.f, .y=33.f}});
     world.registry.emplace<AnimationPlayer>(entity);
 
     auto& transform =
