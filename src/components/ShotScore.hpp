@@ -15,6 +15,8 @@ struct ShotScore
     int mult = 1;
     int finalScore = 0;
 
+    float slowTimer = 0.0f;
+
     bool initialized = false;
     bool finalized = false;
 };

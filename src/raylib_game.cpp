@@ -19,6 +19,7 @@
 #include "./systems/core/SkillCheckSystem.hpp"
 #include "./systems/core/LastStrikeAnimationSystem.hpp"
 #include "./systems/core/BallWallHitSystem.hpp"
+#include "./systems/core/BallLowSpeedDampingSystem.hpp"
 
 #include "./systems/animation/PlayerAnimationSystem.hpp"
 #include "./systems/animation/AnimationSystem.hpp"
@@ -28,6 +29,9 @@
 #include "./systems/ui/SkillCheckUiSystem.hpp"
 #include "./systems/ui/FloatingTextSystem.hpp"
 #include "./systems/ui/FloatingTextRenderSystem.hpp"
+#include "./systems/ui/HudAnimationSystem.hpp"
+#include "./systems/ui/GameHudSystem.hpp"
+#include "./systems/ui/HudPayoutSystem.hpp"
 
 #include "./systems/camera/CameraTargetSystem.hpp"
 #include "./systems/camera/CameraUpdateSystem.hpp"
@@ -72,7 +76,10 @@ int main()
     app.AddSystem(Stage::Update, BallPhysicsSyncSystem);
     app.AddSystem(Stage::Update, BallScoreSystem);
     app.AddSystem(Stage::Update, BallWallHitSystem);
+    app.AddSystem(Stage::Update, BallLowSpeedDampingSystem);
     app.AddSystem(Stage::Update, FloatingTextSystem);
+    app.AddSystem(Stage::Update, HudAnimationSystem);
+    app.AddSystem(Stage::Update, HudPayoutSystem);
     app.AddSystem(Stage::Update, ShotEndSystem);
 
     // app.AddSystem(Stage::Update, PhysicsStepSystem);
@@ -87,8 +94,9 @@ int main()
     // app.AddSystem(Stage::RenderScene, DebugIncomingBallRenderSystem); // Debug
 
     app.AddSystem(Stage::RenderUi, FloatingTextRenderSystem);
+    app.AddSystem(Stage::RenderUi, GameHudSystem);
     app.AddSystem(Stage::RenderUi, SkillCheckUiSystem);
-    app.AddSystem(Stage::RenderUi, DebugUiSystem);
+    // app.AddSystem(Stage::RenderUi, DebugUiSystem);
 
     app.Run();
 

@@ -10,6 +10,9 @@
 
 #include "../../factories/FloatingTextFactory.hpp"
 
+#include "../../const/AudioIds.hpp"
+#include "../../utils/AudioHelper.hpp"
+
 #include <physics/PhysicsWorldResource.hpp>
 
 #include <box2d/box2d.h>
@@ -61,6 +64,10 @@ void BallWallHitSystem(World& world)
             score.mult = 1 + score.wallHits;
             score.finalScore = score.chips * score.mult;
 
+            // AudioHelper::PlaySfx(AudioIds::WallHit);
+            AudioHelper::PlaySfx(AudioIds::Mult, 3.0f, 2.5f);
+
+            // TODO: shake condicional
             AddCameraShake(
                 camera,
                 0.55f,  // intensity

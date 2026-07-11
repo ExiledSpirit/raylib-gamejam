@@ -14,6 +14,11 @@ namespace AudioIds
     constexpr auto SkillCheck = "skill_check";
     constexpr auto SkillCheckBuildUp = "skill_check_build_up";
 
+    constexpr auto WallHit = "wall_hit";
+
+    constexpr auto Yard = "yard";
+    constexpr auto Mult = "mult";
+
     constexpr auto StrikePowerPitch_01 = "strike_power_pitch_01";
     constexpr auto StrikePowerPitch_02 = "strike_power_pitch_02";
     constexpr auto StrikePowerPitch_03 = "strike_power_pitch_03";

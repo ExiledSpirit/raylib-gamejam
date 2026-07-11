@@ -46,7 +46,7 @@ static float AngleDistance(float a, float b)
 static void StartNextSkillCheck(SkillCheckResource& skill)
 {
     skill.currentEvent++;
-    // skill.needleAngle = 0.0f;
+    skill.needleAngle = 0.0f;
 
     // Later you can randomize this.
     skill.zoneCenterAngle = 1.0f + 0.7f * static_cast<float>(skill.currentEvent);
@@ -72,20 +72,19 @@ void SkillCheckSystem(World& world)
 
     if(input.IsPressed("throw"))
     {
-        // later change dist based on current needle angle
         float dist =
             AngleDistance(skill.needleAngle, skill.zoneCenterAngle);
 
         if(dist <= skill.greatZoneSize * 0.5f)
         {
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 2.5f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 1.5f);
 
             skill.greatHits++;
             strike.finalPowerMultiplier += skill.powerPerGreat;
         }
         else if(dist <= skill.goodZoneSize * 0.5f)
         {
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 1.0f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 2.5f);
             skill.goodHits++;
             strike.finalPowerMultiplier += skill.powerPerGood;
         }
@@ -94,13 +93,12 @@ void SkillCheckSystem(World& world)
             skill.misses++;
         }
 
-        // For now using LastStrike on Skillcheck
-        AudioHelper::PlaySfx(AudioIds::LastStrike, 1.0f, 0.5f + skill.greatHits * 0.6f + skill.goodHits * 0.6f);
+        AudioHelper::PlaySfx(AudioIds::SkillCheckBuildUp, 0.35f, 1.0f + skill.greatHits * 0.2f + skill.goodHits * 0.2f);
 
-        // TODO: you should remove hardcoded later
         if(skill.currentEvent + 1 >= skill.totalEvents)
         {
             skill.active = false;
+            AudioHelper::PlaySfx(AudioIds::SkillCheckBuildUp, 0.f, 1.0f + skill.greatHits + skill.goodHits);
             SetRunPhase(run, RunPhase::LastStrikeAnimation);
         }
         else

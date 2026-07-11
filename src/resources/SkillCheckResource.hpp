@@ -20,8 +20,8 @@ struct SkillCheckResource
     float goodZoneSize = 0.55f;
     float greatZoneSize = 0.16f;
 
-    float powerPerGood = 5.0f;
-    float powerPerGreat = 10.0f;
+    float powerPerGood = 2.0f;
+    float powerPerGreat = 5.0f;
 
     int goodHits = 0;
     int greatHits = 0;

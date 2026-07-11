@@ -8,6 +8,9 @@
 
 #include "../../factories/FloatingTextFactory.hpp"
 
+#include "../../utils/AudioHelper.hpp"
+#include "../../const/AudioIds.hpp"
+
 #include <raylib.h>
 #include <raymath.h>
 
@@ -63,6 +66,8 @@ void BallScoreSystem(World& world)
         if(newChips > score.lastDisplayedChips)
         {
             int chipDelta = newChips - score.lastDisplayedChips;
+
+            AudioHelper::PlaySfx(AudioIds::Yard, 0.5f);
 
             CreateFloatingText(
                 world,

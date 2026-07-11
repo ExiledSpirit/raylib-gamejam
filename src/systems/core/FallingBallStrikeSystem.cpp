@@ -130,6 +130,8 @@ void FallingBallStrikeSystem(World& world)
 
             SetRunPhase(run, RunPhase::FirstStrikeAnimation);
             AudioHelper::PlaySfx(AudioIds::LastStrike, 3.0f, 0.5f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheckBuildUp, 0.35f, 1.0f);
+
             return;
         }
 

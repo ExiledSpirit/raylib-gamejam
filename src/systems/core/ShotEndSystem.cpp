@@ -3,48 +3,47 @@
 #include "../../components/Ball.hpp"
 #include "../../components/BallPhysicsBody.hpp"
 #include "../../components/ShotScore.hpp"
+
 #include "../../resources/RunResource.hpp"
+#include "../../resources/HudAnimationResource.hpp"
+
+#include "../../utils/PhaseHelper.hpp"
 
 #include <box2d/box2d.h>
 
-#include <cmath>
-
-static float Length(b2Vec2 v)
-{
-    return std::sqrt(v.x * v.x + v.y * v.y);
-}
-
 void ShotEndSystem(World& world)
 {
-    auto& run = world.GetResource<RunResource>();
+    auto& run =
+        world.GetResource<RunResource>();
 
     if(run.phase != RunPhase::BallRunning)
     {
         return;
     }
 
-    auto view = world.registry.view<Ball, BallPhysicsBody, ShotScore>();
+    auto& hud =
+        world.GetResource<HudAnimationResource>();
+
+    auto view =
+        world.registry.view<Ball, BallPhysicsBody, ShotScore>();
 
     for(auto [entity, ball, physicsBody, score] : view.each())
     {
+        (void)ball;
+
+        if(score.finalized)
+        {
+            return;
+        }
+
         if(!b2Body_IsValid(physicsBody.bodyId))
         {
             continue;
         }
 
-        b2Vec2 velocity =
-            b2Body_GetLinearVelocity(physicsBody.bodyId);
+        constexpr float stopDelay = 0.25f;
 
-        float speedMetersPerSecond =
-            Length(velocity);
-
-        // Tune this value later.
-        if(speedMetersPerSecond > 0.15f)
-        {
-            return;
-        }
-
-        if(score.finalized)
+        if(score.slowTimer < stopDelay)
         {
             return;
         }
@@ -60,25 +59,34 @@ void ShotEndSystem(World& world)
 
         score.finalized = true;
 
-        run.currentScore += score.finalScore;
+        int finalShotScore =
+            score.finalScore;
+
         run.ballsRemaining--;
+
+        hud.payout.active = true;
+        hud.payout.applied = false;
+        hud.payout.amount = finalShotScore;
+        hud.payout.timer = 0.0f;
+        hud.payout.duration = 0.65f;
+
+        hud.payout.startPosition =
+            Vector2{40.0f, 110.0f};
+
+        hud.payout.targetPosition =
+            Vector2{128.0f, 88.0f};
+
+        hud.payout.position =
+            hud.payout.startPosition;
+
+        hud.payoutPulse.timer =
+            hud.payoutPulse.duration;
 
         b2DestroyBody(physicsBody.bodyId);
 
         world.registry.destroy(entity);
 
-        if(run.currentScore >= run.requiredScore)
-        {
-            run.phase = RunPhase::MapWon;
-        }
-        else if(run.ballsRemaining <= 0)
-        {
-            run.phase = RunPhase::MapLost;
-        }
-        else
-        {
-            run.phase = RunPhase::WaitingToDropBall;
-        }
+        SetRunPhase(run, RunPhase::ShotFinished);
 
         return;
     }

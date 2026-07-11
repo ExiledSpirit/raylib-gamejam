@@ -12,6 +12,7 @@
 #include "../resources/TileMapResource.hpp"
 #include "../resources/GameCameraResource.hpp"
 #include "../resources/FontResource.hpp"
+#include "../resources/HudAnimationResource.hpp"
 #include "../prefabs/PrefabRegistry.hpp"
 #include "../prefabs/RegisterPrefabs.hpp"
 #include <physics/PhysicsWorldResource.hpp>
@@ -30,6 +31,11 @@ void InitializeResources(World& world) {
     LoadTileMapResources(world);
     LoadCameraResource(world);
     LoadFonts(world);
+    LoadUiResource(world);
+}
+
+void LoadUiResource(World& world) {
+    world.InsertResource<HudAnimationResource>();
 }
 
 void LoadFonts(World& world)

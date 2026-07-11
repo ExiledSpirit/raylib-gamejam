@@ -34,6 +34,9 @@ public:
         LoadSfx(AudioIds::Homerun, std::string(ASSETS_PATH) + "/audio/homerun.wav");
         LoadSfx(AudioIds::SkillCheck, std::string(ASSETS_PATH) + "/audio/skill_check.wav");
         LoadSfx(AudioIds::SkillCheckBuildUp, std::string(ASSETS_PATH) + "/audio/skill_check_build_up.wav");
+        LoadSfx(AudioIds::Yard, std::string(ASSETS_PATH) + "/audio/yard.wav");
+        LoadSfx(AudioIds::Mult, std::string(ASSETS_PATH) + "/audio/mult.wav");
+        LoadSfx(AudioIds::WallHit, std::string(ASSETS_PATH) + "/audio/wall_hit.wav");
 
         initialized = true;
     }
@@ -141,8 +144,8 @@ public:
             return;
         }
 
-        volume =
-            std::clamp(volume, 0.0f, 1.0f);
+        // volume =
+        //     std::clamp(volume, 0.0f, 1.0f);
 
         SetSoundVolume(it->second, volume);
         SetSoundPitch(it->second, pitch);
