@@ -11,6 +11,7 @@
 #include "../resources/TileDatabaseResource.hpp"
 #include "../resources/TileMapResource.hpp"
 #include "../resources/GameCameraResource.hpp"
+#include "../resources/FontResource.hpp"
 #include "../prefabs/PrefabRegistry.hpp"
 #include "../prefabs/RegisterPrefabs.hpp"
 #include <physics/PhysicsWorldResource.hpp>
@@ -28,6 +29,29 @@ void InitializeResources(World& world) {
     LoadRenderTargetResources(world);
     LoadTileMapResources(world);
     LoadCameraResource(world);
+    LoadFonts(world);
+}
+
+void LoadFonts(World& world)
+{
+    auto& fonts = world.InsertResource<FontResource>();
+
+    fonts.hud = LoadFontEx(
+        ASSETS_PATH "fonts/balatro.otf",
+        10,
+        0,
+        0
+    );
+
+    fonts.title = LoadFontEx(
+        ASSETS_PATH "fonts/balatro.otf",
+        32,
+        0,
+        0
+    );
+
+    SetTextureFilter(fonts.hud.texture, TEXTURE_FILTER_POINT);
+    SetTextureFilter(fonts.title.texture, TEXTURE_FILTER_POINT);
 }
 
 void LoadCameraResource(World& world) {

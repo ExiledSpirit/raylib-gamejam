@@ -9,8 +9,10 @@ namespace AudioIds
     constexpr auto FirstStrike = "first_strike";
 
     constexpr auto LastStrike = "last_strike";
+    constexpr auto Homerun = "last_strike"; // Last strike but HARDER BETTER FASTER STRONGER
 
     constexpr auto SkillCheck = "skill_check";
+    constexpr auto SkillCheckBuildUp = "skill_check_build_up";
 
     constexpr auto StrikePowerPitch_01 = "strike_power_pitch_01";
     constexpr auto StrikePowerPitch_02 = "strike_power_pitch_02";

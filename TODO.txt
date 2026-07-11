@@ -1,0 +1,21 @@
+0 - corrigir audio Build up na Skill Check 
+1 - Corrigir física da bola (pra ela morrer mais cedo)
+2 - UI scoring
+3 - melhorar shaking da camera (muito fraco sem shake e deixar movimentação mais visivel)
+4 - Tela de dinheiro pós vencer level
+5 - Menu do jogo simples
+6 - Aumentar nível e score necessário após passar o mapa (endless)
+7 - Melhorar DBD skill check (visual UI)
+8 - Background shader
+9 - Remove skillchecksystem.cpp hardcode
+
+TODO depois disso:
+Loja - entre os mapas -
+Power ups
+    - visual (bola maior/ bola flamejante)
+    - Bola tripla (devem ter angulo de partida diferentes)
+    - skillCheck++
+    - bola_restante++
+    _
+Tela de derrota (Slowed + Reverb)
+

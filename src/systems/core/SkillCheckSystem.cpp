@@ -8,6 +8,9 @@
 #include <ecs/resources/TimeResource.hpp>
 #include <input/InputResource.hpp>
 
+#include "../../const/AudioIds.hpp"
+#include "../../utils/AudioHelper.hpp"
+
 #include <cmath>
 
 // static constexpr float PI = 3.1415926535f;
@@ -43,7 +46,7 @@ static float AngleDistance(float a, float b)
 static void StartNextSkillCheck(SkillCheckResource& skill)
 {
     skill.currentEvent++;
-    skill.needleAngle = 0.0f;
+    // skill.needleAngle = 0.0f;
 
     // Later you can randomize this.
     skill.zoneCenterAngle = 1.0f + 0.7f * static_cast<float>(skill.currentEvent);
@@ -69,16 +72,20 @@ void SkillCheckSystem(World& world)
 
     if(input.IsPressed("throw"))
     {
+        // later change dist based on current needle angle
         float dist =
             AngleDistance(skill.needleAngle, skill.zoneCenterAngle);
 
         if(dist <= skill.greatZoneSize * 0.5f)
         {
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 2.5f);
+
             skill.greatHits++;
             strike.finalPowerMultiplier += skill.powerPerGreat;
         }
         else if(dist <= skill.goodZoneSize * 0.5f)
         {
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 1.0f);
             skill.goodHits++;
             strike.finalPowerMultiplier += skill.powerPerGood;
         }
@@ -87,6 +94,10 @@ void SkillCheckSystem(World& world)
             skill.misses++;
         }
 
+        // For now using LastStrike on Skillcheck
+        AudioHelper::PlaySfx(AudioIds::LastStrike, 1.0f, 0.5f + skill.greatHits * 0.6f + skill.goodHits * 0.6f);
+
+        // TODO: you should remove hardcoded later
         if(skill.currentEvent + 1 >= skill.totalEvents)
         {
             skill.active = false;

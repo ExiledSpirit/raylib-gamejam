@@ -10,5 +10,6 @@ void LoadDisplayResources(World& world);
 void LoadRenderTargetResources(World& world);
 void LoadCameraResource(World& world);
 void LoadTileMapResources(World& world);
+void LoadFonts(World& world);
 
 void InitializeResources(World& world);

@@ -11,6 +11,10 @@
 #include "../../utils/AudioHelper.hpp"
 
 #include "../../utils/PhaseHelper.hpp"
+#include "../../factories/FloatingTextFactory.hpp"
+
+#include "../../const/AudioIds.hpp"
+#include "../../utils/AudioHelper.hpp"
 
 #include <raylib.h>
 
@@ -41,12 +45,23 @@ static StrikeQuality GetStrikeQuality(
 static void LoseStrike(World& world, entt::entity incomingEntity)
 {
     auto& run = world.GetResource<RunResource>();
+    auto& striker = world.GetResource<PlayerStrikeResource>();
 
     run.ballsRemaining--;
 
     world.registry.destroy(incomingEntity);
 
     SetRunPhase(run, RunPhase::BallMissed);
+    CreateFloatingText(
+        world,
+        "MISS",
+        Vector2{
+            striker.playerPosition.x + 8.0f,
+            striker.playerPosition.y - 18.0f
+        },
+        GRAY,
+        1.5f
+    );
     
     AudioHelper::PlaySfx(AudioIds::Whiff, 1.0f, 1.0f);
 }
@@ -114,6 +129,7 @@ void FallingBallStrikeSystem(World& world)
             world.registry.destroy(entity);
 
             SetRunPhase(run, RunPhase::FirstStrikeAnimation);
+            AudioHelper::PlaySfx(AudioIds::LastStrike, 3.0f, 0.5f);
             return;
         }
 

@@ -66,7 +66,7 @@ void BallScoreSystem(World& world)
 
             CreateFloatingText(
                 world,
-                "+" + std::to_string(chipDelta) + " chip",
+                "+" + std::to_string(chipDelta) + " yard",
                 Vector2{
                     transform.position.x + 8.0f,
                     transform.position.y - 14.0f

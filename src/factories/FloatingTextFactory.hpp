@@ -9,5 +9,6 @@ void CreateFloatingText(
     World& world,
     const std::string& text,
     Vector2 position,
-    Color color
+    Color color,
+    float lifeTime = 0.75f
 );

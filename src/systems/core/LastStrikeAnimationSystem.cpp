@@ -5,6 +5,9 @@
 #include "../../utils/PhaseHelper.hpp"
 #include "../../factories/LaunchedBallFactory.hpp"
 
+#include "../../const/AudioIds.hpp"
+#include "../../utils/AudioHelper.hpp"
+
 void LastStrikeAnimationSystem(World& world)
 {
     auto& run = world.GetResource<RunResource>();
@@ -30,13 +33,13 @@ void LastStrikeAnimationSystem(World& world)
         return;
     }
 
+    
+    AudioHelper::PlaySfx(AudioIds::Homerun, 3.0f, 2.f);
     CreateLaunchedBallFromStrike(world);
     SetRunPhase(run, RunPhase::BallRunning);
 
     float finalPower =
         strike.basePower * strike.finalPowerMultiplier;
-
-    // CreateLaunchedBall(world, strike.playerPosition, finalPower);
 
     run.phase = RunPhase::BallRunning;
 }

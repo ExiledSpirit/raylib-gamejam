@@ -29,6 +29,11 @@ public:
         LoadSfx(AudioIds::MenuMove, "assets/audio/menu_move.wav");
         LoadSfx(AudioIds::MenuSelect, "assets/audio/menu_select.wav");
         LoadSfx(AudioIds::Whiff, std::string(ASSETS_PATH) + "/audio/whiff.wav");
+        LoadSfx(AudioIds::FirstStrike, std::string(ASSETS_PATH) + "/audio/first_strike.wav");
+        LoadSfx(AudioIds::LastStrike, std::string(ASSETS_PATH) + "/audio/last_strike.wav");
+        LoadSfx(AudioIds::Homerun, std::string(ASSETS_PATH) + "/audio/homerun.wav");
+        LoadSfx(AudioIds::SkillCheck, std::string(ASSETS_PATH) + "/audio/skill_check.wav");
+        LoadSfx(AudioIds::SkillCheckBuildUp, std::string(ASSETS_PATH) + "/audio/skill_check_build_up.wav");
 
         initialized = true;
     }

@@ -14,4 +14,6 @@ struct AppConfig
 
     int targetFps = 60;
     int exitKey = KEY_APOSTROPHE;
+
+    Font fontFamily;
 };

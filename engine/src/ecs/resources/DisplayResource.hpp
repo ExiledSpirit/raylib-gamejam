@@ -14,4 +14,6 @@ struct DisplayResource
 
     Vector2 viewportOffset{0.0f, 0.0f};
     Vector2 viewportSize{320.0f, 180.0f};
+
+    Font fontFamily;
 };

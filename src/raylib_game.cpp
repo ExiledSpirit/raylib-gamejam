@@ -38,7 +38,6 @@
 #include "./resources/LauncherResource.hpp"
 #include "./resources/RunResource.hpp"
 
-
 int main()
 {
     ChangeDirectory(GetApplicationDirectory());
@@ -46,6 +45,8 @@ int main()
     config.title = "MY BASEBALL BAT";
     config.internalHeight = 288;
     config.internalWidth = 512;
+    config.windowHeight = 864;
+    config.windowWidth = 1536;
     auto app = App(config);
 
     ConfigureInput(app.GetWorld());

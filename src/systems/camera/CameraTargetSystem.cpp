@@ -91,7 +91,8 @@ void CameraTargetSystem(World& world)
     if(
         run.phase == RunPhase::FirstStrikeAnimation ||
         run.phase == RunPhase::SkillChecks ||
-        run.phase == RunPhase::LastStrikeAnimation
+        run.phase == RunPhase::LastStrikeAnimation ||
+        run.phase == RunPhase::BallMissed
     )
     {
         auto& strike = world.GetResource<PlayerStrikeResource>();
