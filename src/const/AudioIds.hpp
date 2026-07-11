@@ -12,7 +12,9 @@ namespace AudioIds
     constexpr auto Homerun = "last_strike"; // Last strike but HARDER BETTER FASTER STRONGER
 
     constexpr auto SkillCheck = "skill_check";
-    constexpr auto SkillCheckBuildUp = "skill_check_build_up";
+    constexpr auto SkillCheckMiss = "skill_check_miss";
+    constexpr auto SkillCheckGood = "skill_check_good";
+    constexpr auto SkillCheckGreat = "skill_check_great";
 
     constexpr auto WallHit = "wall_hit";
 

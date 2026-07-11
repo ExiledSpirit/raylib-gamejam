@@ -52,17 +52,26 @@ static b2BodyId CreateBallBody(
     bodyDef.type = b2_dynamicBody;
     bodyDef.position = positionMeters;
 
-    bodyDef.linearDamping = 0.18f;
-    bodyDef.angularDamping = 0.8f;
+    // bodyDef.linearDamping = 0.18f;
+    // bodyDef.angularDamping = 0.8f;
+    bodyDef.linearDamping = 0.7f;
+    bodyDef.angularDamping = 0.3f;
 
     b2BodyId bodyId = b2CreateBody(worldId, &bodyDef);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
+
+    // shapeDef.density = 1.0f;
+    // shapeDef.material.friction = 0.2f;
+    // shapeDef.material.restitution = 0.9f;    
     shapeDef.density = 1.0f;
-    shapeDef.material.friction = 0.2f;
-    shapeDef.material.restitution = 0.9f;
+    shapeDef.material.friction = 0.1f;
+    shapeDef.material.restitution = 1.0f;
+
     shapeDef.enableContactEvents = true;
     shapeDef.enableHitEvents = true;
+
+
 
     b2Circle circle{};
     circle.center = b2Vec2{0.0f, 0.0f};

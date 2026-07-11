@@ -25,18 +25,20 @@ public:
             std::string(ASSETS_PATH) + "/audio/soundtrack_01.ogg"
         );
 
-        
         LoadSfx(AudioIds::MenuMove, "assets/audio/menu_move.wav");
         LoadSfx(AudioIds::MenuSelect, "assets/audio/menu_select.wav");
         LoadSfx(AudioIds::Whiff, std::string(ASSETS_PATH) + "/audio/whiff.wav");
         LoadSfx(AudioIds::FirstStrike, std::string(ASSETS_PATH) + "/audio/first_strike.wav");
         LoadSfx(AudioIds::LastStrike, std::string(ASSETS_PATH) + "/audio/last_strike.wav");
         LoadSfx(AudioIds::Homerun, std::string(ASSETS_PATH) + "/audio/homerun.wav");
-        LoadSfx(AudioIds::SkillCheck, std::string(ASSETS_PATH) + "/audio/skill_check.wav");
-        LoadSfx(AudioIds::SkillCheckBuildUp, std::string(ASSETS_PATH) + "/audio/skill_check_build_up.wav");
         LoadSfx(AudioIds::Yard, std::string(ASSETS_PATH) + "/audio/yard.wav");
         LoadSfx(AudioIds::Mult, std::string(ASSETS_PATH) + "/audio/mult.wav");
         LoadSfx(AudioIds::WallHit, std::string(ASSETS_PATH) + "/audio/wall_hit.wav");
+
+        LoadSfx(AudioIds::SkillCheck, std::string(ASSETS_PATH) + "/audio/skill_check.wav");
+        LoadSfx(AudioIds::SkillCheckMiss, std::string(ASSETS_PATH) + "/audio/skill_check_miss.wav");
+        LoadSfx(AudioIds::SkillCheckGood, std::string(ASSETS_PATH) + "/audio/skill_check_good.wav");
+        LoadSfx(AudioIds::SkillCheckGreat, std::string(ASSETS_PATH) + "/audio/skill_check_great.wav");
 
         initialized = true;
     }

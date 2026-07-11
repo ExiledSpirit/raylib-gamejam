@@ -10,7 +10,7 @@ enum class SkillCheckResult
 
 struct SkillCheckResource
 {
-    int totalEvents = 3;
+    int totalEvents = 2;
     int currentEvent = 0;
 
     float needleAngle = 0.0f;

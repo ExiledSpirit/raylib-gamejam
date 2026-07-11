@@ -1,6 +1,6 @@
 0 - corrigir audio Build up na Skill Check 
-1 - Corrigir física da bola (pra ela morrer mais cedo)
-2 - UI scoring
+FEITO - 1 - Corrigir física da bola (pra ela morrer mais cedo)
+PARTIAL - 2 - UI scoring
 3 - melhorar shaking da camera (muito fraco sem shake e deixar movimentação mais visivel)
 4 - Tela de dinheiro pós vencer level
 5 - Menu do jogo simples

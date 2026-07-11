@@ -8,6 +8,8 @@
 #include <ecs/resources/TimeResource.hpp>
 #include <input/InputResource.hpp>
 
+#include "../../factories/FloatingTextFactory.hpp"
+
 #include "../../const/AudioIds.hpp"
 #include "../../utils/AudioHelper.hpp"
 
@@ -77,28 +79,58 @@ void SkillCheckSystem(World& world)
 
         if(dist <= skill.greatZoneSize * 0.5f)
         {
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 1.5f);
+            CreateFloatingText(
+                world,
+                "GREAT!!",
+                (Vector2){
+                    .x=strike.playerPosition.x + 10.f,
+                    .y=strike.playerPosition.y + 10.f
+                },
+                ORANGE,
+                1.5f
+            );
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheckGreat, 0.5f, 1.0f);
 
             skill.greatHits++;
             strike.finalPowerMultiplier += skill.powerPerGreat;
         }
         else if(dist <= skill.goodZoneSize * 0.5f)
         {
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 3.0f, 2.5f);
+            CreateFloatingText(
+                world,
+                "Good",
+                (Vector2){
+                    .x=strike.playerPosition.x + 10.f,
+                    .y=strike.playerPosition.y + 10.f
+                },
+                GREEN,
+                1.5f
+            );
+            AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheckGood, 0.35f, 1.0f);
             skill.goodHits++;
             strike.finalPowerMultiplier += skill.powerPerGood;
         }
         else
         {
+            CreateFloatingText(
+                world,
+                "miss...",
+                (Vector2){
+                    .x=strike.playerPosition.x + 10.f,
+                    .y=strike.playerPosition.y + 10.f
+                },
+                LIGHTGRAY,
+                1.5f
+            );
+            AudioHelper::PlaySfx(AudioIds::SkillCheckMiss, 1.0f, 1.0f);
             skill.misses++;
         }
-
-        AudioHelper::PlaySfx(AudioIds::SkillCheckBuildUp, 0.35f, 1.0f + skill.greatHits * 0.2f + skill.goodHits * 0.2f);
 
         if(skill.currentEvent + 1 >= skill.totalEvents)
         {
             skill.active = false;
-            AudioHelper::PlaySfx(AudioIds::SkillCheckBuildUp, 0.f, 1.0f + skill.greatHits + skill.goodHits);
             SetRunPhase(run, RunPhase::LastStrikeAnimation);
         }
         else

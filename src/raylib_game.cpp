@@ -96,7 +96,7 @@ int main()
     app.AddSystem(Stage::RenderUi, FloatingTextRenderSystem);
     app.AddSystem(Stage::RenderUi, GameHudSystem);
     app.AddSystem(Stage::RenderUi, SkillCheckUiSystem);
-    // app.AddSystem(Stage::RenderUi, DebugUiSystem);
+    app.AddSystem(Stage::RenderUi, DebugUiSystem);
 
     app.Run();
 
