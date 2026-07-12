@@ -6,6 +6,8 @@
 #include "../physics/BuildTilePhysicsFromMap.hpp"
 #include "../factories/BallFactory.hpp"
 #include "../factories/PlayerFactory.hpp"
+#include "../factories/BackgroundFactory.hpp"
+#include "../factories/ArenaFactory.hpp"
 
 static void CreateCodeTileMap(World& world)
 {
@@ -13,7 +15,7 @@ static void CreateCodeTileMap(World& world)
 
     map.width = 20;
     map.height = 15;
-    map.origin = Vector2{96.0f, 24.0f};
+    map.origin = Vector2{150.0f, 80.0f};
 
     map.tiles.resize(map.width * map.height);
 
@@ -42,10 +44,8 @@ void InitializeCodeLevel(World& world)
 
     BuildTilePhysicsFromMap(world);
 
-    CreatePlayer(world, b2Vec2{3.0f, 12.0f}, -0.45f);
+    CreateBackground(world);
+    CreateArena(world);
 
-    CreateBall(
-        world,
-        b2Vec2{3.0f, 12.0f}
-    );
+    CreatePlayer(world, b2Vec2{3.0f, 12.0f}, -0.45f);
 }

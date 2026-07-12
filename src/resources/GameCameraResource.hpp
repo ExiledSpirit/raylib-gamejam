@@ -19,10 +19,10 @@ struct CameraShakeBurst
 
 struct GameCameraResource
 {
-    Vector2 defaultTarget{256.0f, 144.0f};
+    Vector2 defaultTarget{320.0f, 180.0f};
 
-    Vector2 target{256.0f, 144.0f};
-    Vector2 position{256.0f, 144.0f};
+    Vector2 target{320.0f, 180.0f};
+    Vector2 position{320.0f, 180.0f};
 
     float zoom = 1.0f;
     float targetZoom = 1.0f;

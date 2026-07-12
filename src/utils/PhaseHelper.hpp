@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../resources/RunResource.hpp"
+#include "../resources/PlayerStatsResource.hpp"
 #include "../resources/SkillCheckResource.hpp"
 #include "../components/Ball.hpp"
 #include "../components/BallPhysicsBody.hpp"
@@ -14,17 +15,17 @@ inline void SetRunPhase(
     run.phaseTimer = 0.0f;
 }
 
-inline void ResetSkillChecks(SkillCheckResource& skill)
-{
-    skill.currentEvent = 0;
-    skill.needleAngle = 0.0f;
+// inline void ResetSkillChecks(SkillCheckResource& skill)
+// {
+//     skill.currentEvent = 0;
+//     skill.needleAngle = 0.0f;
 
-    skill.goodHits = 0;
-    skill.greatHits = 0;
-    skill.misses = 0;
+//     skill.goodHits = 0;
+//     skill.greatHits = 0;
+//     skill.misses = 0;
 
-    skill.active = true;
-}
+//     skill.active = true;
+// }
 
 inline void DestroyActiveBalls(World& world)
 {
@@ -39,4 +40,14 @@ inline void DestroyActiveBalls(World& world)
 
         world.registry.destroy(entity);
     }
+}
+
+inline void resetLevelNumbers(
+    World& world,
+    RunResource& run
+) {
+    auto stats = world.GetResource<PlayerStatsResource>();
+
+    run.ballsRemaining = stats.GetBallsPerLevel();
+    // run.currentScore = 0;
 }

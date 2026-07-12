@@ -6,6 +6,8 @@
 // include your render systems/helpers here
 #include "TileRenderSystem.hpp"
 #include "SpriteRenderSystem.hpp"
+#include "BackgroundRenderSystem.hpp"
+#include "ArenaRenderSystem.hpp"
 
 #include <raylib.h>
 
@@ -15,13 +17,15 @@ void WorldRenderPassSystem(World& world)
 
     Camera2D camera2D = BuildRaylibCamera2D(
         camera,
-        512,
-        288
+        640,
+        360
     );
 
     BeginMode2D(camera2D);
-    TileRenderSystem(world);
 
+    BackgroundRenderSystem(world);
+    ArenaRenderSystem(world);
+    // TileRenderSystem(world);
     SpriteRenderSystem(world);
 
     EndMode2D();

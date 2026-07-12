@@ -1,141 +1,95 @@
 #include "SkillCheckSystem.hpp"
 
-#include "../../resources/RunResource.hpp"
 #include "../../resources/SkillCheckResource.hpp"
-#include "../../resources/StrikeZonesResource.hpp"
-#include "../../utils/PhaseHelper.hpp"
+#include "../../utils/SkillCheckUtils.hpp"
 
 #include <ecs/resources/TimeResource.hpp>
 #include <input/InputResource.hpp>
 
-#include "../../factories/FloatingTextFactory.hpp"
-
-#include "../../const/AudioIds.hpp"
-#include "../../utils/AudioHelper.hpp"
-
-#include <cmath>
-
-// static constexpr float PI = 3.1415926535f;
-static constexpr float TAU = PI * 2.0f;
-
-static float WrapAngle(float angle)
+static SkillCheckResult EvaluateSkillCheck(
+    const SkillCheckResource& skill
+)
 {
-    while(angle < 0.0f)
+    SkillCheckResult result{};
+    result.valid = true;
+    result.context = skill.context;
+    result.kind = SkillCheckTargetKind::Miss;
+    result.id = "miss";
+    result.label = "Miss";
+
+    int bestPriority = -999999;
+
+    for(const SkillCheckTarget& target : skill.targets)
     {
-        angle += TAU;
+        float distance =
+            SkillCheckAngleDistance(
+                skill.needleAngle,
+                target.centerAngle
+            );
+
+        bool inside =
+            distance <= target.size * 0.5f;
+
+        if(!inside)
+        {
+            continue;
+        }
+
+        if(target.priority < bestPriority)
+        {
+            continue;
+        }
+
+        bestPriority = target.priority;
+
+        result.kind = target.kind;
+        result.id = target.id;
+        result.label = target.label;
+        result.itemIndex = target.itemIndex;
+        result.goldCost = target.goldCost;
     }
 
-    while(angle >= TAU)
-    {
-        angle -= TAU;
-    }
-
-    return angle;
-}
-
-static float AngleDistance(float a, float b)
-{
-    float diff = std::fabs(WrapAngle(a) - WrapAngle(b));
-
-    if(diff > PI)
-    {
-        diff = TAU - diff;
-    }
-
-    return diff;
-}
-
-static void StartNextSkillCheck(SkillCheckResource& skill)
-{
-    skill.currentEvent++;
-    skill.needleAngle = 0.0f;
-
-    // Later you can randomize this.
-    skill.zoneCenterAngle = 1.0f + 0.7f * static_cast<float>(skill.currentEvent);
-    skill.zoneCenterAngle = WrapAngle(skill.zoneCenterAngle);
+    return result;
 }
 
 void SkillCheckSystem(World& world)
 {
-    auto& run = world.GetResource<RunResource>();
+    auto& skill =
+        world.GetResource<SkillCheckResource>();
 
-    if(run.phase != RunPhase::SkillChecks)
+    if(!skill.active)
     {
         return;
     }
 
-    auto& time = world.GetResource<TimeResource>();
-    auto& input = world.GetResource<InputResource>();
-    auto& skill = world.GetResource<SkillCheckResource>();
-    auto& strike = world.GetResource<PlayerStrikeResource>();
+    if(skill.pendingResult.valid)
+    {
+        return;
+    }
+
+    auto& time =
+        world.GetResource<TimeResource>();
+
+    auto& input =
+        world.GetResource<InputResource>();
 
     skill.needleAngle =
-        WrapAngle(skill.needleAngle + skill.needleSpeed * time.deltaTime);
+        WrapSkillCheckAngle(
+            skill.needleAngle +
+            skill.needleSpeed * time.deltaTime
+        );
 
-    if(input.IsPressed("throw"))
+    if(skill.ignoreInputThisFrame)
     {
-        float dist =
-            AngleDistance(skill.needleAngle, skill.zoneCenterAngle);
-
-        if(dist <= skill.greatZoneSize * 0.5f)
-        {
-            CreateFloatingText(
-                world,
-                "GREAT!!",
-                (Vector2){
-                    .x=strike.playerPosition.x + 10.f,
-                    .y=strike.playerPosition.y + 10.f
-                },
-                ORANGE,
-                1.5f
-            );
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
-            AudioHelper::PlaySfx(AudioIds::SkillCheckGreat, 0.5f, 1.0f);
-
-            skill.greatHits++;
-            strike.finalPowerMultiplier += skill.powerPerGreat;
-        }
-        else if(dist <= skill.goodZoneSize * 0.5f)
-        {
-            CreateFloatingText(
-                world,
-                "Good",
-                (Vector2){
-                    .x=strike.playerPosition.x + 10.f,
-                    .y=strike.playerPosition.y + 10.f
-                },
-                GREEN,
-                1.5f
-            );
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
-            AudioHelper::PlaySfx(AudioIds::SkillCheckGood, 0.35f, 1.0f);
-            skill.goodHits++;
-            strike.finalPowerMultiplier += skill.powerPerGood;
-        }
-        else
-        {
-            CreateFloatingText(
-                world,
-                "miss...",
-                (Vector2){
-                    .x=strike.playerPosition.x + 10.f,
-                    .y=strike.playerPosition.y + 10.f
-                },
-                LIGHTGRAY,
-                1.5f
-            );
-            AudioHelper::PlaySfx(AudioIds::SkillCheckMiss, 1.0f, 1.0f);
-            skill.misses++;
-        }
-
-        if(skill.currentEvent + 1 >= skill.totalEvents)
-        {
-            skill.active = false;
-            SetRunPhase(run, RunPhase::LastStrikeAnimation);
-        }
-        else
-        {
-            StartNextSkillCheck(skill);
-        }
+        skill.ignoreInputThisFrame = false;
+        return;
     }
+
+    if(!input.IsPressed("throw"))
+    {
+        return;
+    }
+
+    skill.pendingResult =
+        EvaluateSkillCheck(skill);
 }

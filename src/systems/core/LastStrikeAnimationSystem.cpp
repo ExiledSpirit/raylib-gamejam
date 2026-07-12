@@ -34,7 +34,7 @@ void LastStrikeAnimationSystem(World& world)
     }
 
     
-    AudioHelper::PlaySfx(AudioIds::Homerun, 3.0f, 2.f);
+    AudioHelper::PlaySfx(AudioIds::LastStrike, 1.0f, 1.f);
     CreateLaunchedBallFromStrike(world);
     SetRunPhase(run, RunPhase::BallRunning);
 

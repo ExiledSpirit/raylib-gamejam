@@ -13,6 +13,9 @@ enum class RunPhase
     BallRunning,           // Box2D ball is moving
     ShotFinished,
 
+    LevelReward,
+    Shop,
+
     MapWon,
     MapLost
 };

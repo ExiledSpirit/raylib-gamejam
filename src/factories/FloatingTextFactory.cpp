@@ -8,7 +8,8 @@ void CreateFloatingText(
     const std::string& text,
     Vector2 position,
     Color color,
-    float lifetime
+    float lifetime,
+    int fontSize
 )
 {
     auto entity = world.registry.create();
@@ -20,4 +21,5 @@ void CreateFloatingText(
     floatingText.text = text;
     floatingText.color = color;
     floatingText.lifetime = lifetime;
+    floatingText.fontSize = fontSize;
 }

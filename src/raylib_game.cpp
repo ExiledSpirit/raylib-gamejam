@@ -9,7 +9,6 @@
 #include "./systems/startup/GameStartupSystem.hpp"
 #include "./systems/ui/MainMenuSystem.hpp"
 #include "./systems/core/ShotEndSystem.hpp"
-#include "./systems/core/GolfInputSystem.hpp"
 #include "./systems/core/BallScoreSystem.hpp"
 #include "./systems/core/BallPhysicsSyncSystem.hpp"
 
@@ -17,6 +16,7 @@
 #include "./systems/core/FallingBallStrikeSystem.hpp"
 #include "./systems/core/FirstStrikeAnimationSystem.hpp"
 #include "./systems/core/SkillCheckSystem.hpp"
+#include "./systems/core/LaunchSkillCheckResolverSystem.hpp"
 #include "./systems/core/LastStrikeAnimationSystem.hpp"
 #include "./systems/core/BallWallHitSystem.hpp"
 #include "./systems/core/BallLowSpeedDampingSystem.hpp"
@@ -32,6 +32,8 @@
 #include "./systems/ui/HudAnimationSystem.hpp"
 #include "./systems/ui/GameHudSystem.hpp"
 #include "./systems/ui/HudPayoutSystem.hpp"
+#include "./systems/ui/RewardPopupSystem.hpp"
+#include "./systems/ui/RewardPopupRenderSystem.hpp"
 
 #include "./systems/camera/CameraTargetSystem.hpp"
 #include "./systems/camera/CameraUpdateSystem.hpp"
@@ -47,10 +49,10 @@ int main()
     ChangeDirectory(GetApplicationDirectory());
     AppConfig config = AppConfig();
     config.title = "MY BASEBALL BAT";
-    config.internalHeight = 288;
-    config.internalWidth = 512;
-    config.windowHeight = 864;
-    config.windowWidth = 1536;
+    config.internalHeight = 360;
+    config.internalWidth = 640;
+    config.windowHeight = 720;
+    config.windowWidth = 1280;
     auto app = App(config);
 
     ConfigureInput(app.GetWorld());
@@ -65,6 +67,7 @@ int main()
     app.AddSystem(Stage::Update, FallingBallStrikeSystem);
     app.AddSystem(Stage::Update, FirstStrikeAnimationSystem);
     app.AddSystem(Stage::Update, SkillCheckSystem);
+    app.AddSystem(Stage::Update, LaunchSkillCheckResolverSystem);
     app.AddSystem(Stage::Update, LastStrikeAnimationSystem);
 
     app.AddSystem(Stage::Update, PlayerAnimationSystem);
@@ -80,6 +83,7 @@ int main()
     app.AddSystem(Stage::Update, FloatingTextSystem);
     app.AddSystem(Stage::Update, HudAnimationSystem);
     app.AddSystem(Stage::Update, HudPayoutSystem);
+    app.AddSystem(Stage::Update, RewardPopupSystem);
     app.AddSystem(Stage::Update, ShotEndSystem);
 
     // app.AddSystem(Stage::Update, PhysicsStepSystem);
@@ -96,7 +100,8 @@ int main()
     app.AddSystem(Stage::RenderUi, FloatingTextRenderSystem);
     app.AddSystem(Stage::RenderUi, GameHudSystem);
     app.AddSystem(Stage::RenderUi, SkillCheckUiSystem);
-    app.AddSystem(Stage::RenderUi, DebugUiSystem);
+    app.AddSystem(Stage::RenderUi, RewardPopupRenderSystem);
+    // app.AddSystem(Stage::RenderUi, DebugUiSystem);
 
     app.Run();
 

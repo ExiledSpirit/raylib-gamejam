@@ -33,12 +33,15 @@ public:
         LoadSfx(AudioIds::Homerun, std::string(ASSETS_PATH) + "/audio/homerun.wav");
         LoadSfx(AudioIds::Yard, std::string(ASSETS_PATH) + "/audio/yard.wav");
         LoadSfx(AudioIds::Mult, std::string(ASSETS_PATH) + "/audio/mult.wav");
+        LoadSfx(AudioIds::ScoreBuildup, std::string(ASSETS_PATH) + "/audio/score_buildup.wav");
         LoadSfx(AudioIds::WallHit, std::string(ASSETS_PATH) + "/audio/wall_hit.wav");
 
         LoadSfx(AudioIds::SkillCheck, std::string(ASSETS_PATH) + "/audio/skill_check.wav");
         LoadSfx(AudioIds::SkillCheckMiss, std::string(ASSETS_PATH) + "/audio/skill_check_miss.wav");
         LoadSfx(AudioIds::SkillCheckGood, std::string(ASSETS_PATH) + "/audio/skill_check_good.wav");
         LoadSfx(AudioIds::SkillCheckGreat, std::string(ASSETS_PATH) + "/audio/skill_check_great.wav");
+        LoadSfx(AudioIds::SkillCheckPower, std::string(ASSETS_PATH) + "/audio/skill_check_power.wav");
+        LoadSfx(AudioIds::SkillCheckShop, std::string(ASSETS_PATH) + "/audio/skill_check_shop.wav");
 
         initialized = true;
     }

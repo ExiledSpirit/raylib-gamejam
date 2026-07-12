@@ -8,6 +8,7 @@
 
 #include "../../resources/RunResource.hpp"
 #include "../../resources/StrikeZonesResource.hpp"
+#include "../../resources/PlayerStatsResource.hpp"
 #include "../../utils/AudioHelper.hpp"
 
 #include "../../utils/PhaseHelper.hpp"
@@ -78,6 +79,7 @@ void FallingBallStrikeSystem(World& world)
     auto& time = world.GetResource<TimeResource>();
     auto& input = world.GetResource<InputResource>();
     auto& strike = world.GetResource<PlayerStrikeResource>();
+    auto& stats = world.GetResource<PlayerStatsResource>();
 
     auto view = world.registry.view<IncomingBall, Transform2D>();
 
@@ -118,10 +120,18 @@ void FallingBallStrikeSystem(World& world)
             strike.firstStrikeQuality = quality;
             strike.firstStrikeTimer = 0.0f;
 
-            strike.finalPowerMultiplier =
-                quality == StrikeQuality::Perfect
-                    ? 1.25f
-                    : 1.0f;
+            strike.basePower = stats.basePower;
+
+            if(quality == StrikeQuality::Perfect)
+            {
+                strike.finalPowerMultiplier =
+                    stats.perfectFirstStrikeMultiplier;
+            }
+            else
+            {
+                strike.finalPowerMultiplier =
+                    stats.goodFirstStrikeMultiplier;
+            }
 
             // Store the contact/ball position for the later real physics launch.
             strike.struckBallPosition = transform.position;

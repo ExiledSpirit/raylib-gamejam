@@ -3,15 +3,19 @@
 #include "../../utils/PhaseHelper.hpp"
 #include "../../resources/RunResource.hpp"
 #include "../../resources/StrikeZonesResource.hpp"
-#include "../../resources/SkillCheckResource.hpp"
+#include "../../resources/PlayerStatsResource.hpp"
 #include "../../utils/AudioHelper.hpp"
 #include "../../const/AudioIds.hpp"
+#include "../../resources/SkillCheckResource.hpp"
+#include "../../utils/SkillCheckUtils.hpp"
+#include "../../utils/LaunchSkillCheckUtils.hpp"
 
 void FirstStrikeAnimationSystem(World& world)
 {
     auto& run = world.GetResource<RunResource>();
     auto& time = world.GetResource<TimeResource>();
     auto& strike = world.GetResource<PlayerStrikeResource>();
+    auto& stats = world.GetResource<PlayerStatsResource>();
 
     run.phaseTimer += time.deltaTime;
 
@@ -21,10 +25,18 @@ void FirstStrikeAnimationSystem(World& world)
         {
             if(run.phaseTimer >= strike.firstStrikeDuration)
             {
-                SetRunPhase(run, RunPhase::SkillChecks);
-
                 auto& skill = world.GetResource<SkillCheckResource>();
-                ResetSkillChecks(skill);
+
+                BeginSkillCheck(
+                    skill,
+                    SkillCheckContext::Launch,
+                    CreateLaunchSkillCheckTargets(),
+                    5.5f,
+                    0,
+                    stats.GetTotalSkillChecks()
+                );
+
+                SetRunPhase(run, RunPhase::SkillChecks);
             }
 
             break;

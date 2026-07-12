@@ -9,8 +9,6 @@
 
 void PhysicsStepSystem(World& world)
 {
-    TraceLog(LOG_INFO, "DIDNT BREAK");
-
     auto& physics = world.GetResource<PhysicsWorldResource>();
     auto& time = world.GetResource<TimeResource>();
 

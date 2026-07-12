@@ -2,4 +2,4 @@
 
 #include <core/World.hpp>
 
-void GolfRenderSystem(World& world);
+void ArenaRenderSystem(World& world);

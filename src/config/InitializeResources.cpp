@@ -13,6 +13,10 @@
 #include "../resources/GameCameraResource.hpp"
 #include "../resources/FontResource.hpp"
 #include "../resources/HudAnimationResource.hpp"
+#include "../resources/RewardPopupResource.hpp"
+#include "../resources/CampaignResource.hpp"
+#include "../resources/EconomyResource.hpp"
+#include "../resources/PlayerStatsResource.hpp"
 #include "../prefabs/PrefabRegistry.hpp"
 #include "../prefabs/RegisterPrefabs.hpp"
 #include <physics/PhysicsWorldResource.hpp>
@@ -32,6 +36,13 @@ void InitializeResources(World& world) {
     LoadCameraResource(world);
     LoadFonts(world);
     LoadUiResource(world);
+    LoadRewardResource(world);
+}
+
+void LoadRewardResource(World& world) {
+    world.InsertResource<RewardPopupResource>();
+    world.InsertResource<CampaignResource>();
+    world.InsertResource<EconomyResource>();
 }
 
 void LoadUiResource(World& world) {
@@ -124,7 +135,7 @@ void LoadRenderTargetResources(World& world) {
 
 void LoadDisplayResources(World& world) {
     DisplayResource displayResource = DisplayResource();
-    displayResource.internalResolution = {512, 288};
+    displayResource.internalResolution = {640, 360};
     displayResource.windowResolution = {(float)GetScreenWidth(), (float)GetScreenHeight()};
 
     CalculateViewport(displayResource);
@@ -141,6 +152,7 @@ void InitializeGameMechanicsResources(World& world) {
 
 void LoadGameStateResources(World& world) {
     world.InsertResource<GameStateResource>();
+    world.InsertResource<PlayerStatsResource>();
 }
 
 void LoadPrefabRegistry(World& world) {

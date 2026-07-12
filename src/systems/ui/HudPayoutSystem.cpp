@@ -3,6 +3,7 @@
 #include "../../resources/HudAnimationResource.hpp"
 #include "../../resources/RunResource.hpp"
 #include "../../utils/PhaseHelper.hpp"
+#include "../../utils/LevelRewardUtils.hpp"
 
 #include <ecs/resources/TimeResource.hpp>
 
@@ -99,12 +100,12 @@ void HudPayoutSystem(World& world)
     {
         hud.barShakeStrength = 1.0f;
 
-        // This is the perfect place to add:
         // - win SFX
         // - background shader intensity
         // - small camera shake
         // - bar flash
-        SetRunPhase(run, RunPhase::MapWon);
+        OpenLevelRewardPopup(world);
+        SetRunPhase(run, RunPhase::LevelReward);
         return;
     }
 

@@ -6,6 +6,8 @@
 #include <cmath>
 
 #include "../../components/Transform2d.hpp"
+#include "../../components/Background.hpp"
+#include "../../components/Arena.hpp"
 #include <ecs/components/Sprite.hpp>
 
 static void DrawSprite(
@@ -17,7 +19,7 @@ static void DrawSprite(
 void SpriteRenderSystem(World& world)
 {
     auto spriteView =
-        world.registry.view<Transform2D, Sprite>();
+        world.registry.view<Transform2D, Sprite>(entt::exclude<Background, Arena>);
 
     for(auto [entity, transform, sprite] : spriteView.each())
     {

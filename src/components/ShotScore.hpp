@@ -18,4 +18,6 @@ struct ShotScore
     float slowTimer = 0.0f;
     bool initialized = false;
     bool finalized = false;
+
+    bool onFire = false;
 };

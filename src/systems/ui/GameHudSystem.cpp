@@ -244,9 +244,9 @@ void GameHudSystem(World& world)
 
     // chips x mult
     // Chips are right-aligned so they grow to the left.
-    Vector2 chipsRight{30.0f, 110.0f};
-    Vector2 xCenter{38.0f, 110.0f};
-    Vector2 multLeft{46.0f, 110.0f};
+    Vector2 chipsRight{38.0f, 150.0f};
+    Vector2 xCenter{46.0f, 150.0f};
+    Vector2 multLeft{54.0f, 150.0f};
 
     DrawPulsingTextRightAligned(
         fonts.hud,
@@ -292,7 +292,7 @@ void GameHudSystem(World& world)
     DrawPulsingTextCentered(
         fonts.hud,
         std::to_string(displayedScore) + " / " + std::to_string(run.requiredScore),
-        Vector2{128.0f, 62.0f},
+        Vector2{47.0f, 70.0f},
         10.0f,
         hud.scorePulse,
         WHITE
@@ -330,8 +330,8 @@ void GameHudSystem(World& world)
     int barY =
         static_cast<int>(82 + barOffset.y);
 
-    int barW = 240;
-    int barH = 12;
+    int barW = 80;
+    int barH = 16;
 
     DrawRectangle(
         barX,

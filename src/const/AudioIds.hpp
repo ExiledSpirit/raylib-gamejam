@@ -9,17 +9,21 @@ namespace AudioIds
     constexpr auto FirstStrike = "first_strike";
 
     constexpr auto LastStrike = "last_strike";
-    constexpr auto Homerun = "last_strike"; // Last strike but HARDER BETTER FASTER STRONGER
+    constexpr auto Homerun = "homerun"; // Last strike but HARDER BETTER FASTER STRONGER
 
     constexpr auto SkillCheck = "skill_check";
     constexpr auto SkillCheckMiss = "skill_check_miss";
     constexpr auto SkillCheckGood = "skill_check_good";
     constexpr auto SkillCheckGreat = "skill_check_great";
+    constexpr auto SkillCheckPower = "skill_check_power";
+    constexpr auto SkillCheckShop = "skill_check_shop";
 
     constexpr auto WallHit = "wall_hit";
 
     constexpr auto Yard = "yard";
     constexpr auto Mult = "mult";
+
+    constexpr auto ScoreBuildup = "score_buildup";
 
     constexpr auto StrikePowerPitch_01 = "strike_power_pitch_01";
     constexpr auto StrikePowerPitch_02 = "strike_power_pitch_02";

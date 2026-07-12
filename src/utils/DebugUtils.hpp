@@ -29,6 +29,12 @@ inline const char* RunPhaseToString(RunPhase phase)
 
         case RunPhase::ShotFinished:
             return "ShotFinished";
+            
+        case RunPhase::LevelReward:
+            return "LevelReward";
+            
+        case RunPhase::Shop:
+            return "Shop";
 
         case RunPhase::MapWon:
             return "MapWon";

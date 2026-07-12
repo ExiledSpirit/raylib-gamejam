@@ -21,6 +21,8 @@ void GameStartupSystem(World& world)
 
     assets.LoadTexture("player", std::string(ASSETS_PATH) + "player.png");
     assets.LoadTexture("ball", std::string(ASSETS_PATH) + "ball.png");
+    assets.LoadTexture("background", std::string(ASSETS_PATH) + "background.png");
+    assets.LoadTexture("arena", std::string(ASSETS_PATH) + "arena.png");
     
     LoadAnimations(assets);
     LoadBackgrounds(assets);
