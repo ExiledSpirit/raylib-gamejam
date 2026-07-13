@@ -1,18 +1,14 @@
+#pragma once
+
 enum class GameScreen
 {
-    Menu,
-    Playing
-};
-
-enum class MenuPanel
-{
-    Main,
-    LoadGame,
-    Options
+    MainMenu,
+    Playing,
+    Shop
 };
 
 struct GameScreenResource
 {
-    GameScreen screen = GameScreen::Menu;
-    MenuPanel menuPanel = MenuPanel::Main;
+    GameScreen current = GameScreen::Playing;
+    GameScreen target = GameScreen::Playing;
 };

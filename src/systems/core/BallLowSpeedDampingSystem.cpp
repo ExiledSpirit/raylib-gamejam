@@ -10,6 +10,7 @@
 #include <box2d/box2d.h>
 
 #include <cmath>
+#include <algorithm>
 
 static float Length(b2Vec2 v)
 {
@@ -18,14 +19,16 @@ static float Length(b2Vec2 v)
 
 void BallLowSpeedDampingSystem(World& world)
 {
-    auto& run = world.GetResource<RunResource>();
+    auto& run =
+        world.GetResource<RunResource>();
 
     if(run.phase != RunPhase::BallRunning)
     {
         return;
     }
 
-    auto& time = world.GetResource<TimeResource>();
+    auto& time =
+        world.GetResource<TimeResource>();
 
     auto view =
         world.registry.view<Ball, BallPhysicsBody, ShotScore>();
@@ -55,17 +58,10 @@ void BallLowSpeedDampingSystem(World& world)
         if(speed < slowSpeed)
         {
             float slowAmount =
-                1.0f - (speed / slowSpeed);
+                1.0f - speed / slowSpeed;
 
-            if(slowAmount < 0.0f)
-            {
-                slowAmount = 0.0f;
-            }
-
-            if(slowAmount > 1.0f)
-            {
-                slowAmount = 1.0f;
-            }
+            slowAmount =
+                std::clamp(slowAmount, 0.0f, 1.0f);
 
             float damping =
                 minExtraDamping +
@@ -74,13 +70,24 @@ void BallLowSpeedDampingSystem(World& world)
             float factor =
                 std::exp(-damping * time.deltaTime);
 
+            velocity.x *= factor;
+            velocity.y *= factor;
+
+            float newSpeed =
+                Length(velocity);
+
+            if(newSpeed < 0.03f)
+            {
+                velocity = b2Vec2{0.0f, 0.0f};
+                newSpeed = 0.0f;
+            }
+
             b2Body_SetLinearVelocity(
                 physics.bodyId,
-                b2Vec2{
-                    velocity.x * factor,
-                    velocity.y * factor
-                }
+                velocity
             );
+
+            speed = newSpeed;
         }
 
         if(speed < verySlowSpeed)

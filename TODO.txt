@@ -19,3 +19,51 @@ Power ups
     _
 Tela de derrota (Slowed + Reverb)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skill check diminuir com o tempo (nao ficar infinito)
+
+ACTIVE
+
+PASSIVE
+Anger
+    buff: +200% power multiplier
+    debuff: -1 bolas por round
+
+Lucky Great
+    buff: +25% great skill check power
+
+caddy
+    buff: +1 ball per round
+
+Concentration pill
+    buff: +1 skill check
+
+multi-bola
+    +1 bola disparada
+    -> multi++ -> multi+++
+
+big-ball
+    buff: size++ | +200% mult
+    debuff: -20% power multiplier
+
+explosion-ball
+    buff: explodes after hitting wall 5 times increasing velocity by 200%

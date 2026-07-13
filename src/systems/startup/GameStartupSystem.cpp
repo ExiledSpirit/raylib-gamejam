@@ -29,7 +29,7 @@ void GameStartupSystem(World& world)
     LoadUiAssets(assets);
     AudioHelper::InitializeAudioHelper();
     // AudioHelper::PlayMusic(AudioIds::SoundTrack_01, 1.f);`
-    AudioHelper::PlaySoundtrack();
+    AudioHelper::PlayMusic(AudioIds::MainSoundTrack, 0.6f);
 
     auto& prefabs =
         world.GetResource<PrefabRegistry>();

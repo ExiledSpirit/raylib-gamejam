@@ -6,6 +6,7 @@
 #include "../../components/Transform2D.hpp"
 
 #include "../../resources/GameCameraResource.hpp"
+#include "../../resources/TileMapResource.hpp"
 #include "../../utils/CameraShakeUtils.hpp"
 
 #include "../../factories/FloatingTextFactory.hpp"
@@ -17,6 +18,42 @@
 
 #include <box2d/box2d.h>
 #include <raylib.h>
+
+static float Length(b2Vec2 v)
+{
+    return std::sqrt(v.x * v.x + v.y * v.y);
+}
+
+static int GetWallHitValue(float speedPixelsPerSecond)
+{
+    // 0..99   -> +1
+    // 100..149 -> +2
+    // 150..199 -> +3
+    // etc.
+    int value =
+        static_cast<int>(speedPixelsPerSecond / 50.0f);
+
+    return std::max(1, value);
+}
+
+static float GetWallHitVelocityRetention(float speedMetersPerSecond)
+{
+    constexpr float lowSpeed = 2.5f;
+    constexpr float highSpeed = 10.0f;
+
+    constexpr float lowSpeedRetention = 0.72f;
+    constexpr float highSpeedRetention = 0.96f;
+
+    float t =
+        (speedMetersPerSecond - lowSpeed) /
+        (highSpeed - lowSpeed);
+
+    t =
+        std::clamp(t, 0.0f, 1.0f);
+
+    return lowSpeedRetention +
+        t * (highSpeedRetention - lowSpeedRetention);
+}
 
 static bool SameBody(b2BodyId a, b2BodyId b)
 {
@@ -59,8 +96,18 @@ void BallWallHitSystem(World& world)
             {
                 continue;
             }
+            b2Vec2 velocity =
+                b2Body_GetLinearVelocity(physics.bodyId);
 
-            score.wallHits++;
+            float speedMeters =
+                Length(velocity);
+
+            float speedPixels =
+                speedMeters * static_cast<float>(TILE_SIZE);
+
+            int wallHitValue =
+                GetWallHitValue(speedPixels);
+            score.wallHits += wallHitValue;
             score.mult = 1 + score.wallHits;
             score.finalScore = score.chips * score.mult;
 
@@ -68,18 +115,20 @@ void BallWallHitSystem(World& world)
             AudioHelper::PlaySfx(AudioIds::Mult, 3.0f, 2.5f);
 
             // TODO: shake condicional
-            AddCameraShake(
-                camera,
-                0.55f,  // intensity
-                0.12f,  // duration
-                10.0f,   // max offset
-                0.25f,  // max rotation
-                10.0f   // frequency
-            );
+            if (speedMeters > 50) {
+                AddCameraShake(
+                    camera,
+                    0.55f,  // intensity
+                    0.12f,  // duration
+                    10.0f,   // max offset
+                    0.25f,  // max rotation
+                    10.0f   // frequency
+                );
+            }
 
             CreateFloatingText(
                 world,
-                "+1 mult",
+                TextFormat("+%i mult", wallHitValue),
                 Vector2{
                     transform.position.x + 8.0f,
                     transform.position.y - 18.0f

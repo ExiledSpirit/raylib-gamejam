@@ -32,24 +32,12 @@ inline std::vector<SkillCheckTarget> CreateLaunchSkillCheckTargets()
     great.label = "Great";
     great.kind = SkillCheckTargetKind::Great;
     great.centerAngle = center +0.40;
-    great.size = 0.18f;
+    great.size = 0.22f;
     great.priority = 2;
     great.color = ORANGE;
     great.outlined = false;
 
     targets.push_back(great);
-
-    SkillCheckTarget powerX{};
-    powerX.id = "multi";
-    powerX.label = "multi";
-    powerX.kind = SkillCheckTargetKind::ActivePower;
-    powerX.centerAngle = static_cast<float>(GetRandomValue(0, 6283)) / 1000.0f;
-    powerX.size = 0.60f;
-    powerX.priority = 3;
-    powerX.color = RED;
-    powerX.outlined = false;
-
-    targets.push_back(powerX);
 
     return targets;
 }

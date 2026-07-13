@@ -28,7 +28,7 @@ struct RunResource
 
     float phaseTimer = 0.0f;
 
-    int requiredScore = 250;
+    int requiredScore = 300;
     int currentScore = 0;
 
     int ballsRemaining = 3;

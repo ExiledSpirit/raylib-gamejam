@@ -5,8 +5,12 @@
 #include "../../resources/CampaignResource.hpp"
 #include "../../resources/RunResource.hpp"
 #include "../../resources/PlayerStatsResource.hpp"
+#include "../../resources/ScreenTransitionResource.hpp"
+#include "../../resources/GameScreenResource.hpp"
 
 #include "../../utils/PhaseHelper.hpp"
+#include "../../utils/ScreenTransitionHelper.hpp"
+#include "../../utils/CampaignHelper.hpp"
 
 #include <ecs/resources/TimeResource.hpp>
 #include <input/InputResource.hpp>
@@ -36,6 +40,7 @@ void RewardPopupSystem(World& world)
     auto& popup = world.GetResource<RewardPopupResource>();
     auto& time = world.GetResource<TimeResource>();
     auto& input = world.GetResource<InputResource>();
+    auto& screenTransitionResource = world.GetResource<ScreenTransitionResource>();
 
     if(!popup.active)
     {
@@ -94,10 +99,11 @@ void RewardPopupSystem(World& world)
         AdvanceCampaign(campaign);
 
         run.currentScore = 0;
-        run.requiredScore = CalculateRequiredScore(campaign.globalLevelIndex);
+        run.requiredScore = CalculateRequiredScore(campaign);
         resetLevelNumbers(world, run);
 
         // Later this can become RunPhase::Shop.
         SetRunPhase(run, RunPhase::Shop);
+        RequestScreenTransition(screenTransitionResource, GameScreen::Shop, ScreenTransitionAction::EnterShop);
     }
 }

@@ -4,39 +4,66 @@
 
 struct PlayerStatsResource
 {
-    // Balls
     int baseBallsPerLevel = 3;
-    int extraBallsPerLevel = 0;
+    int ballsPerLevel = 3;
 
-    // Skill checks
-    int baseTotalSkillChecks = 3;
-    int extraSkillChecks = 0;
-
-    // Launch power
-    float basePower = 5.0f;
-
-    // First strike
     float goodFirstStrikeMultiplier = 1.0f;
     float perfectFirstStrikeMultiplier = 1.25f;
 
-    // Skill check power gains.
-    // These are added to PlayerStrikeResource::finalPowerMultiplier.
-    float baseGoodPowerBonus = 2.f;
-    float baseGreatPowerBonus = 4.f;
+    int baseTotalSkillChecks = 3;
+    int totalSkillChecks = 3;
 
-    // Passive item multipliers.
-    // Example: +25% great bonus means greatPowerBonusMultiplier = 1.25f.
+    float basePower = 5.0f;
+    float powerMultiplier = 1.0f;
+
+    float baseGoodPowerBonus = 2.f;
     float goodPowerBonusMultiplier = 1.0f;
+
+    float baseGreatPowerBonus = 3.f;
     float greatPowerBonusMultiplier = 1.0f;
+
+    float skillCheckSizeMultiplier = 1.0f;
+
+    float baseBallRadiusMeters = 0.5f;
+    float ballSizeMultiplier = 1.0f;
+
+    int extraLaunchedBalls = 0;
+    float multiBallAngleStep = 0.22f;
+
+    float explosionChanceOnWallBounce = 0.0f;
+    float explosionVelocityMultiplier = 1.0f;
+
+    void ResetToBase()
+    {
+        ballsPerLevel = baseBallsPerLevel;
+        totalSkillChecks = baseTotalSkillChecks;
+
+        powerMultiplier = 1.0f;
+        goodPowerBonusMultiplier = 1.0f;
+        greatPowerBonusMultiplier = 1.0f;
+        skillCheckSizeMultiplier = 1.0f;
+
+        ballSizeMultiplier = 1.0f;
+        extraLaunchedBalls = 0;
+        multiBallAngleStep = 0.22f;
+
+        explosionChanceOnWallBounce = 0.0f;
+        explosionVelocityMultiplier = 1.0f;
+    }
 
     int GetBallsPerLevel() const
     {
-        return std::max(1, baseBallsPerLevel + extraBallsPerLevel);
+        return std::max(1, ballsPerLevel);
     }
 
     int GetTotalSkillChecks() const
     {
-        return std::max(0, baseTotalSkillChecks + extraSkillChecks);
+        return std::max(1, totalSkillChecks);
+    }
+
+    float GetBasePower() const
+    {
+        return basePower * powerMultiplier;
     }
 
     float GetGoodPowerBonus() const
@@ -47,5 +74,20 @@ struct PlayerStatsResource
     float GetGreatPowerBonus() const
     {
         return baseGreatPowerBonus * greatPowerBonusMultiplier;
+    }
+
+    float GetBallRadiusMeters() const
+    {
+        return std::max(0.2f, baseBallRadiusMeters * ballSizeMultiplier);
+    }
+
+    int GetLaunchedBallCount() const
+    {
+        return std::max(1, 1 + extraLaunchedBalls);
+    }
+
+    bool HasExplosiveBounce() const
+    {
+        return explosionChanceOnWallBounce > 0.0f;
     }
 };

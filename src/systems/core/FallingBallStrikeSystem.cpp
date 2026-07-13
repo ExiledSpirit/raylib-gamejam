@@ -139,7 +139,7 @@ void FallingBallStrikeSystem(World& world)
             world.registry.destroy(entity);
 
             SetRunPhase(run, RunPhase::FirstStrikeAnimation);
-            AudioHelper::PlaySfx(AudioIds::FirstStrike, 0.5f, 1.f);
+            AudioHelper::PlaySfx(AudioIds::LastStrike, 0.3f, 0.5f);
 
             return;
         }

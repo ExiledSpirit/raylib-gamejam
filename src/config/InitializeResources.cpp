@@ -17,11 +17,17 @@
 #include "../resources/CampaignResource.hpp"
 #include "../resources/EconomyResource.hpp"
 #include "../resources/PlayerStatsResource.hpp"
+#include "../resources/MusicStateResource.hpp"
+#include "../resources/ScreenTransitionResource.hpp"
+#include "../resources/PowerUpDatabaseResource.hpp"
+#include "../resources/PlayerPowerUpsResource.hpp"
+#include "../resources/ShopResource.hpp"
 #include "../prefabs/PrefabRegistry.hpp"
 #include "../prefabs/RegisterPrefabs.hpp"
 #include <physics/PhysicsWorldResource.hpp>
 #include <box2d/box2d.h>
 #include "../utils/CalculateViewport.hpp"
+#include "../factories/PowerUpFactory.hpp"
 
 void InitializeResources(World& world) {
     LoadGameScreenResource(world);
@@ -37,6 +43,15 @@ void InitializeResources(World& world) {
     LoadFonts(world);
     LoadUiResource(world);
     LoadRewardResource(world);
+    LoadPowerUpResources(world);
+}
+
+void LoadPowerUpResources(World& world) {
+    auto& database = world.InsertResource<PowerUpDatabaseResource>();
+    world.InsertResource<PlayerPowerUpsResource>();
+    world.InsertResource<ShopResource>();
+
+    LoadCppPowerUps(database);
 }
 
 void LoadRewardResource(World& world) {
@@ -181,4 +196,6 @@ void LoadGamePhysicsResource(World& world) {
 void LoadGameScreenResource(World& world) {
     auto gameScreenResource = GameScreenResource();
     world.InsertResource<GameScreenResource>(gameScreenResource);
+    world.InsertResource<ScreenTransitionResource>();
+    world.InsertResource<MusicStateResource>();
 }

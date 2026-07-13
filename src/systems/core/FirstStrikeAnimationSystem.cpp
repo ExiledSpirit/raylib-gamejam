@@ -36,6 +36,8 @@ void FirstStrikeAnimationSystem(World& world)
                     stats.GetTotalSkillChecks()
                 );
 
+                AudioHelper::PlaySfx(AudioIds::SkillCheckBuildup, 0.3f);
+                AudioHelper::PlayMusic(AudioIds::MainSoundTrack, 0.2f);
                 SetRunPhase(run, RunPhase::SkillChecks);
             }
 

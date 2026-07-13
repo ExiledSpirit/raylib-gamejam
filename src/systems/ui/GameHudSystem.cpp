@@ -3,6 +3,8 @@
 #include "../../resources/RunResource.hpp"
 #include "../../resources/HudAnimationResource.hpp"
 #include "../../resources/FontResource.hpp"
+#include "../../resources/CampaignResource.hpp"
+#include "../../resources/EconomyResource.hpp"
 
 #include "../../components/ShotScore.hpp"
 #include "../../components/Ball.hpp"
@@ -13,19 +15,40 @@
 #include <cmath>
 #include <string>
 
-static const ShotScore* GetCurrentShotScore(World& world)
+struct ShotHudTotals
 {
-    auto view = world.registry.view<Ball, ShotScore>();
+    bool hasActiveShot = false;
+    int chips = 0;
+    int wallHits = 0;
+    int mult = 0;
+    int finalScore = 0;
+};
+
+static ShotHudTotals GetCurrentShotTotals(World& world)
+{
+    ShotHudTotals totals{};
+
+    auto view =
+        world.registry.view<Ball, ShotScore>();
 
     for(auto [entity, ball, score] : view.each())
     {
         (void)entity;
         (void)ball;
 
-        return &score;
+        totals.hasActiveShot = true;
+
+        totals.chips += score.chips;
+        totals.wallHits += score.wallHits;
     }
 
-    return nullptr;
+    if(totals.hasActiveShot)
+    {
+        totals.mult = 1 + totals.wallHits;
+        totals.finalScore = totals.chips * totals.mult;
+    }
+
+    return totals;
 }
 
 static float GetPulseScale(const HudPulse& pulse)
@@ -197,18 +220,19 @@ void GameHudSystem(World& world)
 
     auto& fonts =
         world.GetResource<FontResource>();
+    auto& economy =
+        world.GetResource<EconomyResource>();
+    auto& campaign =
+        world.GetResource<CampaignResource>();
 
-    const ShotScore* score =
-        GetCurrentShotScore(world);
+    ShotHudTotals shotTotals =
+        GetCurrentShotTotals(world);
 
-    int chips = 0;
-    int mult = 0;
+    int chips =
+        shotTotals.chips;
 
-    if(score != nullptr)
-    {
-        chips = score->chips;
-        mult = score->mult;
-    }
+    int mult =
+        shotTotals.mult;
 
     int displayedScore =
         run.currentScore;
@@ -225,34 +249,17 @@ void GameHudSystem(World& world)
     progress =
         std::clamp(progress, 0.0f, 1.0f);
 
-    DrawText(
-        "BALLS",
-        16.0f,
-        14.0f,
-        10.0f,
-        Color{180, 180, 180, 255}
-    );
-
-    DrawPulsingTextCentered(
-        fonts.hud,
-        std::to_string(run.ballsRemaining),
-        Vector2{58.0f, 33.0f},
-        18.0f,
-        hud.ballsPulse,
-        WHITE
-    );
-
     // chips x mult
     // Chips are right-aligned so they grow to the left.
-    Vector2 chipsRight{38.0f, 150.0f};
-    Vector2 xCenter{46.0f, 150.0f};
-    Vector2 multLeft{54.0f, 150.0f};
+    Vector2 chipsRight{52.0f, 180.0f};
+    Vector2 xCenter{60.0f, 180.0f};
+    Vector2 multLeft{68.0f, 180.0f};
 
     DrawPulsingTextRightAligned(
         fonts.hud,
         std::to_string(chips),
         chipsRight,
-        16.0f,
+        22.0f,
         hud.chipsPulse,
         SKYBLUE
     );
@@ -261,7 +268,7 @@ void GameHudSystem(World& world)
         fonts.hud,
         "x",
         xCenter,
-        16.0f,
+        22.0f,
         1.0f,
         WHITE
     );
@@ -270,7 +277,7 @@ void GameHudSystem(World& world)
         fonts.hud,
         std::to_string(mult),
         multLeft,
-        16.0f,
+        22.0f,
         hud.multPulse,
         ORANGE
     );
@@ -287,14 +294,37 @@ void GameHudSystem(World& world)
             YELLOW
         );
     }
+    
+    DrawText(
+        TextFormat("$%d", economy.gold),
+        xCenter.x + 20.f,
+        xCenter.y + 24.f,
+        20,
+        GOLD
+    );
+    
+    DrawText(
+        "REMAINING",
+        8,
+        xCenter.y + 20.f,
+        10,
+        Color{180, 180, 180, 255}
+    );
 
-    // Score text: only committed score, not preview score.
+    DrawText(
+        "BALLS",
+        8,
+        xCenter.y + 30.f,
+        10,
+        Color{180, 180, 180, 255}
+    );
+
     DrawPulsingTextCentered(
         fonts.hud,
-        std::to_string(displayedScore) + " / " + std::to_string(run.requiredScore),
-        Vector2{47.0f, 70.0f},
-        10.0f,
-        hud.scorePulse,
+        std::to_string(run.ballsRemaining),
+        Vector2{50.0f, xCenter.y + 40.0f},
+        18.0f,
+        hud.ballsPulse,
         WHITE
     );
 
@@ -328,10 +358,10 @@ void GameHudSystem(World& world)
         static_cast<int>(8 + barOffset.x);
 
     int barY =
-        static_cast<int>(82 + barOffset.y);
+        static_cast<int>(130 + barOffset.y);
 
-    int barW = 80;
-    int barH = 16;
+    int barW = 100;
+    int barH = 24;
 
     DrawRectangle(
         barX,
@@ -358,5 +388,51 @@ void GameHudSystem(World& world)
         fillW,
         barH - 4,
         Color{120, 220, 140, 255}
+    );
+    
+    // Score text: only committed score, not preview score.
+    DrawPulsingTextCentered(
+        fonts.hud,
+        std::to_string(displayedScore) + " / " + std::to_string(run.requiredScore),
+        Vector2{
+            static_cast<float>(barX + (barW/2)),
+            static_cast<float>(barY + (barH/2))
+        },
+        10.0f,
+        hud.scorePulse,
+        WHITE
+    );
+
+    
+    DrawText(
+        "ACT",
+        8,
+        barY - 40.f,
+        10,
+        Color{180, 180, 180, 255}
+    );
+
+    DrawText(
+        TextFormat("%i/%i", campaign.act, campaign.maxActs),
+        8,
+        barY - 28.f,
+        20,
+        WHITE
+    );
+    
+    DrawText(
+        "GAME",
+        60,
+        barY - 40.f,
+        10,
+        Color{180, 180, 180, 255}
+    );
+
+    DrawText(
+        TextFormat("%i", campaign.level),
+        70,
+        barY - 28.f,
+        20,
+        WHITE
     );
 }

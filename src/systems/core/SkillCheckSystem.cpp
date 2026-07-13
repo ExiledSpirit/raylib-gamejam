@@ -10,6 +10,7 @@ static SkillCheckResult EvaluateSkillCheck(
     const SkillCheckResource& skill
 )
 {
+    TraceLog(LOG_INFO, "EVALUATING SKILLCHECK");
     SkillCheckResult result{};
     result.valid = true;
     result.context = skill.context;
@@ -49,6 +50,7 @@ static SkillCheckResult EvaluateSkillCheck(
         result.goldCost = target.goldCost;
     }
 
+    TraceLog(LOG_INFO, TextFormat("id = %s", result.id.c_str()));
     return result;
 }
 

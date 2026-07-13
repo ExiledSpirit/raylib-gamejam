@@ -10,6 +10,9 @@
 #include "../../utils/PhaseHelper.hpp"
 
 #include <box2d/box2d.h>
+#include <raylib.h>
+
+#include <vector>
 
 void ShotEndSystem(World& world)
 {
@@ -21,31 +24,33 @@ void ShotEndSystem(World& world)
         return;
     }
 
-    auto& hud =
-        world.GetResource<HudAnimationResource>();
-
     auto view =
         world.registry.view<Ball, BallPhysicsBody, ShotScore>();
+
+    constexpr float stopDelay = 0.25f;
+
+    bool hasAnyBall = false;
+    bool allBallsStopped = true;
+
+    int totalShotScore = 0;
+
+    std::vector<entt::entity> ballsToDestroy;
 
     for(auto [entity, ball, physicsBody, score] : view.each())
     {
         (void)ball;
 
-        if(score.finalized)
-        {
-            return;
-        }
+        hasAnyBall = true;
 
         if(!b2Body_IsValid(physicsBody.bodyId))
         {
+            ballsToDestroy.push_back(entity);
             continue;
         }
 
-        constexpr float stopDelay = 0.25f;
-
         if(score.slowTimer < stopDelay)
         {
-            return;
+            allBallsStopped = false;
         }
 
         score.chips =
@@ -57,37 +62,62 @@ void ShotEndSystem(World& world)
         score.finalScore =
             score.chips * score.mult;
 
-        score.finalized = true;
+        totalShotScore += score.finalScore;
 
-        int finalShotScore =
-            score.finalScore;
+        ballsToDestroy.push_back(entity);
+    }
 
-        run.ballsRemaining--;
-
-        hud.payout.active = true;
-        hud.payout.applied = false;
-        hud.payout.amount = finalShotScore;
-        hud.payout.timer = 0.0f;
-        hud.payout.duration = 0.65f;
-
-        hud.payout.startPosition =
-            Vector2{40.0f, 110.0f};
-
-        hud.payout.targetPosition =
-            Vector2{128.0f, 88.0f};
-
-        hud.payout.position =
-            hud.payout.startPosition;
-
-        hud.payoutPulse.timer =
-            hud.payoutPulse.duration;
-
-        b2DestroyBody(physicsBody.bodyId);
-
-        world.registry.destroy(entity);
-
-        SetRunPhase(run, RunPhase::ShotFinished);
-
+    if(!hasAnyBall)
+    {
         return;
     }
+
+    if(!allBallsStopped)
+    {
+        return;
+    }
+
+    auto& hud =
+        world.GetResource<HudAnimationResource>();
+
+    run.ballsRemaining--;
+
+    hud.payout.active = true;
+    hud.payout.applied = false;
+    hud.payout.amount = totalShotScore;
+    hud.payout.timer = 0.0f;
+    hud.payout.duration = 0.65f;
+
+    hud.payout.startPosition =
+        Vector2{60.0f, 200.0f};
+
+    hud.payout.targetPosition =
+        Vector2{58.0f, 142.0f};
+
+    hud.payout.position =
+        hud.payout.startPosition;
+
+    hud.payoutPulse.timer =
+        hud.payoutPulse.duration;
+
+    for(entt::entity entity : ballsToDestroy)
+    {
+        if(!world.registry.valid(entity))
+        {
+            continue;
+        }
+
+        auto* physicsBody =
+            world.registry.try_get<BallPhysicsBody>(entity);
+
+        if(physicsBody != nullptr &&
+           b2Body_IsValid(physicsBody->bodyId))
+        {
+            b2DestroyBody(physicsBody->bodyId);
+        }
+
+        world.registry.destroy(entity);
+    }
+
+    SetRunPhase(run, RunPhase::ShotFinished);
 }

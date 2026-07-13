@@ -3,6 +3,9 @@
 #include "../resources/RewardPopupResource.hpp"
 #include "../resources/RunResource.hpp"
 #include "../resources/EconomyResource.hpp"
+#include "../resources/CampaignResource.hpp"
+
+#include "../utils/CampaignHelper.hpp"
 
 #include <algorithm>
 #include <string>
@@ -22,6 +25,7 @@ void OpenLevelRewardPopup(World& world)
     auto& popup = world.GetResource<RewardPopupResource>();
     auto& run = world.GetResource<RunResource>();
     auto& economy = world.GetResource<EconomyResource>();
+    auto& campaign = world.GetResource<CampaignResource>();
 
     popup.active = true;
     popup.buttonVisible = false;
@@ -32,7 +36,7 @@ void OpenLevelRewardPopup(World& world)
     popup.buttonTimer = 0.0f;
     popup.totalGold = 0;
 
-    int completionGold = 5;
+    int completionGold = GetLevelClearGold(campaign);
     int remainingBallsGold = run.ballsRemaining;
     int powerGold = economy.powerGoldThisLevel;
 

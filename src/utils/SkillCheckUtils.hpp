@@ -127,3 +127,38 @@ inline void ReplaceSkillCheckTargetById(
         }
     }
 }
+
+inline const SkillCheckTarget* GetCurrentHoveredSkillCheckTarget(
+    const SkillCheckResource& skill
+)
+{
+    const SkillCheckTarget* best = nullptr;
+    int bestPriority = -999999;
+
+    for(const SkillCheckTarget& target : skill.targets)
+    {
+        float distance =
+            SkillCheckAngleDistance(
+                skill.needleAngle,
+                target.centerAngle
+            );
+
+        bool inside =
+            distance <= target.size * 0.5f;
+
+        if(!inside)
+        {
+            continue;
+        }
+
+        if(target.priority < bestPriority)
+        {
+            continue;
+        }
+
+        best = &target;
+        bestPriority = target.priority;
+    }
+
+    return best;
+}

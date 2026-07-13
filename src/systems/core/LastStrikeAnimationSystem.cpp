@@ -34,12 +34,13 @@ void LastStrikeAnimationSystem(World& world)
     }
 
     
-    AudioHelper::PlaySfx(AudioIds::LastStrike, 1.0f, 1.f);
+    AudioHelper::PlaySfx(AudioIds::LastStrike, 0.6f, 1.f);
     CreateLaunchedBallFromStrike(world);
     SetRunPhase(run, RunPhase::BallRunning);
 
     float finalPower =
         strike.basePower * strike.finalPowerMultiplier;
 
+    AudioHelper::PlayMusic(AudioIds::MainSoundTrack, 0.6f);
     run.phase = RunPhase::BallRunning;
 }

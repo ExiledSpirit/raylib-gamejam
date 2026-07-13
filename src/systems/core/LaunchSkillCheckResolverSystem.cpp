@@ -59,8 +59,11 @@ void LaunchSkillCheckResolverSystem(World& world)
                 GREEN,
                 1.5f
             );
+            strike.skillCheckCounter++;
+
             AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
             AudioHelper::PlaySfx(AudioIds::SkillCheckGood, 0.35f, 1.0f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheckBuildup, 0.3f, std::min(1.8f, 1.0f + (strike.skillCheckCounter * 0.2f)));
 
             strike.finalPowerMultiplier += stats.GetGoodPowerBonus();
             break;
@@ -78,10 +81,13 @@ void LaunchSkillCheckResolverSystem(World& world)
                 ORANGE,
                 1.5f
             );
+            strike.skillCheckCounter++;
+
             AudioHelper::PlaySfx(AudioIds::SkillCheck, 0.5f, 1.0f);
             AudioHelper::PlaySfx(AudioIds::SkillCheckGreat, 0.5f, 1.0f);
+            AudioHelper::PlaySfx(AudioIds::SkillCheckBuildup, 0.3f, std::min(1.8f, 1.0f + (strike.skillCheckCounter * 0.2f)));
 
-            strike.finalPowerMultiplier += stats.GetGreatPowerBonus();    
+            strike.finalPowerMultiplier += stats.GetGreatPowerBonus();
             break;
         }
 
@@ -104,6 +110,7 @@ void LaunchSkillCheckResolverSystem(World& world)
             );
             AudioHelper::PlaySfx(AudioIds::SkillCheck, 1.f, 1.0f);
             AudioHelper::PlaySfx(AudioIds::SkillCheckPower, 0.7f, 1.75f);
+
             RemoveSkillCheckTargetById(skill, result.id);
             return;
         }
@@ -131,8 +138,10 @@ void LaunchSkillCheckResolverSystem(World& world)
 
     if(nextCheck >= skill.totalChecks)
     {
+        AudioHelper::PlaySfx(AudioIds::SkillCheckBuildup, 0.f);
         EndSkillCheck(skill);
         SetRunPhase(run, RunPhase::LastStrikeAnimation);
+        strike.skillCheckCounter = 0;
         return;
     }
 

@@ -7,6 +7,7 @@
 
 #include "../resources/StrikeZonesResource.hpp"
 #include "../resources/TileMapResource.hpp"
+#include "../resources/PlayerStatsResource.hpp"
 
 #include <physics/PhysicsWorldResource.hpp>
 
@@ -52,18 +53,15 @@ static b2BodyId CreateBallBody(
     bodyDef.type = b2_dynamicBody;
     bodyDef.position = positionMeters;
 
-    // bodyDef.linearDamping = 0.18f;
-    // bodyDef.angularDamping = 0.8f;
     bodyDef.linearDamping = 0.7f;
     bodyDef.angularDamping = 0.3f;
 
-    b2BodyId bodyId = b2CreateBody(worldId, &bodyDef);
+    b2BodyId bodyId =
+        b2CreateBody(worldId, &bodyDef);
 
-    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    b2ShapeDef shapeDef =
+        b2DefaultShapeDef();
 
-    // shapeDef.density = 1.0f;
-    // shapeDef.material.friction = 0.2f;
-    // shapeDef.material.restitution = 0.9f;    
     shapeDef.density = 1.0f;
     shapeDef.material.friction = 0.1f;
     shapeDef.material.restitution = 1.0f;
@@ -71,7 +69,10 @@ static b2BodyId CreateBallBody(
     shapeDef.enableContactEvents = true;
     shapeDef.enableHitEvents = true;
 
-
+    // Important for multi-ball:
+    // negative group index means balls in this same group do NOT collide with each other.
+    // They will still collide with walls, because walls should use groupIndex = 0.
+    shapeDef.filter.groupIndex = -1;
 
     b2Circle circle{};
     circle.center = b2Vec2{0.0f, 0.0f};
@@ -86,41 +87,49 @@ static b2BodyId CreateBallBody(
     return bodyId;
 }
 
-entt::entity CreateLaunchedBallFromStrike(World& world)
+static entt::entity CreateOneLaunchedBall(
+    World& world,
+    Vector2 spawnPositionPixels,
+    float angleRadians,
+    float speed,
+    float radiusMeters
+)
 {
-    DestroyActiveBalls(world);
-    auto& physics = world.GetResource<PhysicsWorldResource>();
-    auto& map = world.GetResource<TileMapResource>();
-    auto& strike = world.GetResource<PlayerStrikeResource>();
-    auto& assets = world.GetResource<AssetManager>();
+    auto& physics =
+        world.GetResource<PhysicsWorldResource>();
 
-    constexpr float ballRadiusMeters = 0.5f;
+    auto& map =
+        world.GetResource<TileMapResource>();
+
+    auto& assets =
+        world.GetResource<AssetManager>();
+
+    auto& stats =
+        world.GetResource<PlayerStatsResource>();
 
     b2Vec2 spawnPositionMeters =
         WorldPixelsToPhysicsMeters(
             map,
-            strike.struckBallPosition
+            spawnPositionPixels
         );
 
     b2BodyId bodyId =
         CreateBallBody(
             physics.worldId,
             spawnPositionMeters,
-            ballRadiusMeters
+            radiusMeters
         );
 
-    float finalPower =
-        strike.basePower * strike.finalPowerMultiplier;
-
-    b2Vec2 impulse{
-        std::cos(strike.facingRadians) * finalPower,
-        std::sin(strike.facingRadians) * finalPower
+    b2Vec2 velocity{
+        std::cos(angleRadians) * speed,
+        std::sin(angleRadians) * speed
     };
 
-    b2Body_ApplyLinearImpulseToCenter(
+    // For your arcade game, this is better than impulse.
+    // The finalPower becomes the actual ball speed.
+    b2Body_SetLinearVelocity(
         bodyId,
-        impulse,
-        true
+        velocity
     );
 
     entt::entity entity =
@@ -143,14 +152,30 @@ entt::entity CreateLaunchedBallFromStrike(World& world)
         );
 
     transform.rotation = 0.0f;
-    transform.scale = Vector2{1.0f, 1.0f};
     transform.origin = Vector2{8.0f, 8.0f};
+
+    float radiusPixels =
+        radiusMeters * static_cast<float>(TILE_SIZE);
+
+    float diameterPixels =
+        radiusPixels * 2.0f;
+
+    // Your ball sprite source is 16x16.
+    // If radiusMeters = 0.5 and TILE_SIZE = 16:
+    // diameter = 16px, scale = 1.
+    transform.scale = Vector2{
+        diameterPixels / 16.0f,
+        diameterPixels / 16.0f
+    };
 
     auto& sprite =
         world.registry.emplace<Sprite>(entity);
 
-    sprite.albedoTexture = &assets.GetTexture("ball");
-    sprite.source = Rectangle{0.0f, 0.0f, 16.0f, 16.0f};
+    sprite.albedoTexture =
+        &assets.GetTexture("ball");
+
+    sprite.source =
+        Rectangle{0.0f, 0.0f, 16.0f, 16.0f};
 
     auto& score =
         world.registry.emplace<ShotScore>(entity);
@@ -158,5 +183,66 @@ entt::entity CreateLaunchedBallFromStrike(World& world)
     score.previousPosition = transform.position;
     score.initialized = true;
 
+    if(stats.HasExplosiveBounce())
+    {
+        // world.registry.emplace<ExplosiveBounceEffect>(
+        //     entity,
+        //     stats.explosionChanceOnWallBounce,
+        //     stats.explosionVelocityMultiplier
+        // );
+    }
+
     return entity;
+}
+
+entt::entity CreateLaunchedBallFromStrike(World& world)
+{
+    DestroyActiveBalls(world);
+
+    auto& strike =
+        world.GetResource<PlayerStrikeResource>();
+
+    auto& stats =
+        world.GetResource<PlayerStatsResource>();
+
+    int ballCount =
+        stats.GetLaunchedBallCount();
+
+    float radiusMeters =
+        stats.GetBallRadiusMeters();
+
+    float finalPower =
+        strike.basePower * strike.finalPowerMultiplier;
+
+    entt::entity firstEntity =
+        entt::null;
+
+    float centerIndex =
+        static_cast<float>(ballCount - 1) * 0.5f;
+
+    for(int i = 0; i < ballCount; ++i)
+    {
+        float angleOffset =
+            (static_cast<float>(i) - centerIndex) *
+            stats.multiBallAngleStep;
+
+        float angle =
+            strike.facingRadians + angleOffset;
+
+        entt::entity entity =
+            CreateOneLaunchedBall(
+                world,
+                strike.struckBallPosition,
+                angle,
+                finalPower,
+                radiusMeters
+            );
+
+        if(firstEntity == entt::null)
+        {
+            firstEntity = entity;
+        }
+    }
+
+    return firstEntity;
 }

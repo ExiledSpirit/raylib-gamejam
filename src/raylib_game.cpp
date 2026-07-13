@@ -7,7 +7,6 @@
 #include <physics/PhysicsStepSystem.hpp>
 #include "./systems/sfx/UpdateMusicSystem.hpp"
 #include "./systems/startup/GameStartupSystem.hpp"
-#include "./systems/ui/MainMenuSystem.hpp"
 #include "./systems/core/ShotEndSystem.hpp"
 #include "./systems/core/BallScoreSystem.hpp"
 #include "./systems/core/BallPhysicsSyncSystem.hpp"
@@ -17,6 +16,7 @@
 #include "./systems/core/FirstStrikeAnimationSystem.hpp"
 #include "./systems/core/SkillCheckSystem.hpp"
 #include "./systems/core/LaunchSkillCheckResolverSystem.hpp"
+#include "./systems/core/ShopSkillCheckResolverSystem.hpp"
 #include "./systems/core/LastStrikeAnimationSystem.hpp"
 #include "./systems/core/BallWallHitSystem.hpp"
 #include "./systems/core/BallLowSpeedDampingSystem.hpp"
@@ -24,16 +24,17 @@
 #include "./systems/animation/PlayerAnimationSystem.hpp"
 #include "./systems/animation/AnimationSystem.hpp"
 
-#include "./systems/render/WorldRenderPassSystem.hpp"
-#include "./systems/ui/GolfUiSystem.hpp"
-#include "./systems/ui/SkillCheckUiSystem.hpp"
-#include "./systems/ui/FloatingTextSystem.hpp"
-#include "./systems/ui/FloatingTextRenderSystem.hpp"
+#include "./systems/render/PlayingSceneRenderSystem.hpp"
+#include "./systems/render/ShopSceneRenderSystem.hpp"
+
 #include "./systems/ui/HudAnimationSystem.hpp"
-#include "./systems/ui/GameHudSystem.hpp"
 #include "./systems/ui/HudPayoutSystem.hpp"
 #include "./systems/ui/RewardPopupSystem.hpp"
-#include "./systems/ui/RewardPopupRenderSystem.hpp"
+#include "./systems/ui/FloatingTextSystem.hpp"
+#include "./systems/ui/PlayingUiSystem.hpp"
+#include "./systems/ui/ScreenTransitionSystem.hpp"
+#include "./systems/ui/ScreenTransitionRenderSystem.hpp"
+#include "./systems/ui/ShopUiSystem.hpp"
 
 #include "./systems/camera/CameraTargetSystem.hpp"
 #include "./systems/camera/CameraUpdateSystem.hpp"
@@ -68,6 +69,7 @@ int main()
     app.AddSystem(Stage::Update, FirstStrikeAnimationSystem);
     app.AddSystem(Stage::Update, SkillCheckSystem);
     app.AddSystem(Stage::Update, LaunchSkillCheckResolverSystem);
+    app.AddSystem(Stage::Update, ShopSkillCheckResolverSystem);
     app.AddSystem(Stage::Update, LastStrikeAnimationSystem);
 
     app.AddSystem(Stage::Update, PlayerAnimationSystem);
@@ -86,23 +88,23 @@ int main()
     app.AddSystem(Stage::Update, RewardPopupSystem);
     app.AddSystem(Stage::Update, ShotEndSystem);
 
-    // app.AddSystem(Stage::Update, PhysicsStepSystem);
-    // app.AddSystem(Stage::Update, BallPhysicsSyncSystem);
-    // app.AddSystem(Stage::Update, BallScoreSystem);
-    // app.AddSystem(Stage::Update, ShotEndSystem);
-
     app.AddSystem(Stage::Update, CameraTargetSystem);
     app.AddSystem(Stage::Update, CameraUpdateSystem);
+    app.AddSystem(Stage::Update, ScreenTransitionSystem);
 
-    app.AddSystem(Stage::RenderScene, WorldRenderPassSystem);
-    // app.AddSystem(Stage::RenderScene, DebugIncomingBallRenderSystem); // Debug
+    // MENU
+    // app.AddSystem(Stage::RenderScene, MainMenuSceneRenderSystem);
+    // app.AddSystem(Stage::RenderUi, MainMenuShopUiSystem);
 
-    app.AddSystem(Stage::RenderUi, FloatingTextRenderSystem);
-    app.AddSystem(Stage::RenderUi, GameHudSystem);
-    app.AddSystem(Stage::RenderUi, SkillCheckUiSystem);
-    app.AddSystem(Stage::RenderUi, RewardPopupRenderSystem);
-    // app.AddSystem(Stage::RenderUi, DebugUiSystem);
+    // PLAYING
+    app.AddSystem(Stage::RenderScene, PlayingSceneRenderSystem);
+    app.AddSystem(Stage::RenderUi, PlayingUiSystem);
 
+    // SHOP
+    app.AddSystem(Stage::RenderScene, ShopSceneRenderSystem);
+    app.AddSystem(Stage::RenderUi, ShopUiSystem);
+
+    app.AddSystem(Stage::RenderUi, ScreenTransitionRenderSystem);
     app.Run();
 
     return 1;

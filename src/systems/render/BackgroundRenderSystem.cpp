@@ -27,7 +27,7 @@ void BackgroundRenderSystem(World& world)
             },
             transform.origin,
             transform.rotation,
-            WHITE
+            Color{255,255,255,100}
         );
     }
 }
