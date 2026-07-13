@@ -14,10 +14,46 @@ entt::entity CreatePlayer(
 
 inline void RebuildStrikeZones(PlayerStrikeResource& strike)
 {
-    const float x = strike.playerPosition.x;
-    const float y = strike.playerPosition.y;
+    // This is the center point of the whole hittable area.
+    // Adjust this offset until it visually matches the bat.
+    Vector2 strikeCenter{
+        strike.playerPosition.x + 8.0f,
+        strike.playerPosition.y - 8.0f
+    };
 
-    strike.topZone = Rectangle{x, y, 22.0f, 8.0f};
-    strike.perfectZone = Rectangle{x, y + 8.0f, 22.0f, 7.0f};
-    strike.bottomZone = Rectangle{x, y + 15.0f, 22.0f, 8.0f};
+    constexpr float zoneWidth = 36.0f;
+
+    constexpr float topHeight = 14.0f;
+    constexpr float perfectHeight = 12.0f;
+    constexpr float bottomHeight = 14.0f;
+
+    const float totalHeight =
+        topHeight + perfectHeight + bottomHeight;
+
+    const float left =
+        strikeCenter.x - zoneWidth * 0.5f;
+
+    const float top =
+        strikeCenter.y - totalHeight * 0.5f;
+
+    strike.topZone = Rectangle{
+        left,
+        top,
+        zoneWidth,
+        topHeight
+    };
+
+    strike.perfectZone = Rectangle{
+        left,
+        top + topHeight,
+        zoneWidth,
+        perfectHeight
+    };
+
+    strike.bottomZone = Rectangle{
+        left,
+        top + topHeight + perfectHeight,
+        zoneWidth,
+        bottomHeight
+    };
 }
