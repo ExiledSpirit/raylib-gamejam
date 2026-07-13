@@ -2,6 +2,7 @@
 
 enum class RunPhase
 {
+    MainMenu,
     WaitingToDropBall,     // player presses SPACE to start the falling ball
     BallFalling,           // player must press SPACE at the right timing
     BallMissed,            // Player missed ball strike
@@ -22,7 +23,7 @@ enum class RunPhase
 
 struct RunResource
 {
-    RunPhase phase = RunPhase::WaitingToDropBall;
+    RunPhase phase = RunPhase::MainMenu;
 
     int level = 1;
 

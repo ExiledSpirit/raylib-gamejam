@@ -5,6 +5,9 @@
 #include "../../utils/PhaseHelper.hpp"
 #include "../../utils/LevelRewardUtils.hpp"
 
+#include "../../const/AudioIds.hpp"
+#include "../../utils/AudioHelper.hpp"
+
 #include <ecs/resources/TimeResource.hpp>
 
 #include <raymath.h>
@@ -95,6 +98,8 @@ void HudPayoutSystem(World& world)
 
     bool reachedRequiredScore =
         run.currentScore >= run.requiredScore;
+
+    AudioHelper::PlaySfx(AudioIds::Payout);
 
     if(reachedRequiredScore)
     {

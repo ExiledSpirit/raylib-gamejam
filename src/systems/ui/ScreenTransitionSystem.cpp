@@ -10,6 +10,8 @@
 #include "../../utils/PhaseHelper.hpp"
 #include "../../utils/ShopItemHelper.hpp"
 #include "../../utils/SkillCheckUtils.hpp"
+#include "../../utils/MainMenuIntroHelper.hpp"
+#include "../../utils/RunResetHelper.hpp"
 
 #include "../../utils/AudioHelper.hpp"
 #include "../../const/AudioIds.hpp"
@@ -28,7 +30,23 @@ static void ApplyTransitionAction(World& world)
     {
         case ScreenTransitionAction::StartPlaying:
         {
-            SetRunPhase(run, RunPhase::WaitingToDropBall);
+            ResetGameRun(world);
+
+            AudioHelper::SetMusicPitchValue(
+                AudioIds::MainSoundTrack,
+                1.0f
+            );
+
+            AudioHelper::PlayMusic(
+                AudioIds::MainSoundTrack,
+                0.6f
+            );
+
+            SetRunPhase(
+                run,
+                RunPhase::WaitingToDropBall
+            );
+
             break;
         }
 
@@ -69,6 +87,25 @@ static void ApplyTransitionAction(World& world)
 
         case ScreenTransitionAction::ReturnToMenu:
         {
+            ResetMainMenuIntro(world);
+
+            auto& run = world.GetResource<RunResource>();
+
+            AudioHelper::StopMusic(
+                AudioIds::StoreSoundTrack
+            );
+
+            AudioHelper::StopMusic(
+                AudioIds::MainSoundTrack
+            );
+
+            AudioHelper::SetMusicPitchValue(
+                AudioIds::MainSoundTrack,
+                1.0f
+            );
+
+
+            ResetToMainMenuState(world);
             break;
         }
 

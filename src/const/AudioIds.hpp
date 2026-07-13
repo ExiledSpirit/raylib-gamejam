@@ -8,16 +8,16 @@ namespace AudioIds
     constexpr auto Whiff = "whiff";
 
     constexpr auto FirstStrike = "first_strike";
+    constexpr auto FirstStrikePerfect = "first_strike_perfect";
 
     constexpr auto LastStrike = "last_strike";
-    constexpr auto Homerun = "homerun"; // Last strike but HARDER BETTER FASTER STRONGER
+    constexpr auto Homerun = "homerun";
     constexpr auto Payout = "payout";
 
     constexpr auto SkillCheck = "skill_check";
     constexpr auto SkillCheckMiss = "skill_check_miss";
     constexpr auto SkillCheckGood = "skill_check_good";
     constexpr auto SkillCheckGreat = "skill_check_great";
-    constexpr auto SkillCheckPower = "skill_check_power";
 
     constexpr auto WallHit = "wall_hit";
 
@@ -29,4 +29,8 @@ namespace AudioIds
     constexpr auto Bell = "bell";
     constexpr auto ItemBuy = "item_buy";
     constexpr auto Reroll = "reroll";
+
+    // Main
+    inline const std::string MainMenuBatStrike = "main_menu_bat_strike";
+    inline const std::string GlassBreak = "glass_break";
 }

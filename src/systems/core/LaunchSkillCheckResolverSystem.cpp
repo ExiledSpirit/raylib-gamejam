@@ -95,23 +95,24 @@ void LaunchSkillCheckResolverSystem(World& world)
         {
             // Later:
             // ActivatePower(result.id);
-            strike.finalPowerMultiplier += 0.20f;
+            // strike.finalPowerMultiplier += 0.20f;
 
-            CreateFloatingText(
-                world,
-                result.label,
-                (Vector2){
-                    .x=strike.playerPosition.x + 45.f,
-                    .y=strike.playerPosition.y + 5.f
-                },
-                RED,
-                2.f,
-                14
-            );
-            AudioHelper::PlaySfx(AudioIds::SkillCheck, 1.f, 1.0f);
-            AudioHelper::PlaySfx(AudioIds::SkillCheckPower, 0.7f, 1.75f);
+            // CreateFloatingText(
+            //     world,
+            //     result.label,
+            //     (Vector2){
+            //         .x=strike.playerPosition.x + 45.f,
+            //         .y=strike.playerPosition.y + 5.f
+            //     },
+            //     RED,
+            //     2.f,
+            //     14
+            // );
+            // AudioHelper::PlaySfx(AudioIds::SkillCheck, 1.f, 1.0f);
+            // AudioHelper::PlaySfx(AudioIds::SkillCheckPower, 0.7f, 1.75f);
 
-            RemoveSkillCheckTargetById(skill, result.id);
+            // RemoveSkillCheckTargetById(skill, result.id);
+            // return;
             return;
         }
 

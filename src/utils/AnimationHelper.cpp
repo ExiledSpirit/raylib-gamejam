@@ -93,7 +93,7 @@ void LoadAnimations(
         "player_last_strike_sheet",
         86, //86
         66, //66
-        3, //1
+        7, //1
         0.08f,
         false
     );
@@ -103,7 +103,7 @@ void LoadAnimations(
         "player_whiff_sheet",
         86, //86
         66, //66
-        5, //1
+        9, //1
         0.04f,
         false
     );
@@ -141,7 +141,7 @@ void LoadAnimations(
         "player_last_strike_right_sheet",
         86, //86
         66, //66
-        3, //1
+        7, //1
         0.08f,
         false
     );
@@ -151,7 +151,7 @@ void LoadAnimations(
         "player_whiff_right_sheet",
         86, //86
         66, //66
-        5, //1
+        9, //1
         0.04f,
         false
     );

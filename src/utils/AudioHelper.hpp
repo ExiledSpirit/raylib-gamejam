@@ -8,6 +8,17 @@
 
 #include "../const/AudioIds.hpp"
 
+struct MusicPitchTween
+{
+    bool active = false;
+
+    float from = 1.0f;
+    float to = 1.0f;
+
+    float timer = 0.0f;
+    float duration = 1.0f;
+};
+
 class AudioHelper
 {
 public:
@@ -44,10 +55,13 @@ public:
         LoadSfx(AudioIds::SkillCheckMiss, std::string(ASSETS_PATH) + "/audio/skill_check_miss.wav");
         LoadSfx(AudioIds::SkillCheckGood, std::string(ASSETS_PATH) + "/audio/skill_check_good.wav");
         LoadSfx(AudioIds::SkillCheckGreat, std::string(ASSETS_PATH) + "/audio/skill_check_great.wav");
-        LoadSfx(AudioIds::SkillCheckPower, std::string(ASSETS_PATH) + "/audio/skill_check_power.wav");
+        LoadSfx(AudioIds::FirstStrikePerfect, std::string(ASSETS_PATH) + "/audio/first_strike_perfect.wav");
 
         LoadSfx(AudioIds::Reroll, std::string(ASSETS_PATH) + "/audio/reroll.wav");
         LoadSfx(AudioIds::ItemBuy, std::string(ASSETS_PATH) + "/audio/item_buy.wav");
+        
+        LoadSfx(AudioIds::MainMenuBatStrike, std::string(ASSETS_PATH) + "/audio/main_menu_bat_strike.wav");
+        LoadSfx(AudioIds::GlassBreak, std::string(ASSETS_PATH) + "/audio/glass_break.wav");
 
         initialized = true;
     }
@@ -143,6 +157,9 @@ public:
         music.looping = true;
         musicTracks.emplace(id, music);
 
+        musicPitches[id] = 1.0f;
+        musicPitchTweens[id] = MusicPitchTween{};
+
         return true;
     }
 
@@ -234,13 +251,48 @@ public:
 
     static void Update()
     {
+        float dt =
+            GetFrameTime();
+
         for(auto& [id, music] : musicTracks)
         {
-            (void)id;
-
             if(IsMusicValid(music))
             {
                 UpdateMusicStream(music);
+            }
+        }
+
+        for(auto& [id, tween] : musicPitchTweens)
+        {
+            if(!tween.active)
+            {
+                continue;
+            }
+
+            tween.timer += dt;
+
+            float t =
+                tween.timer / tween.duration;
+
+            if(t > 1.0f)
+            {
+                t = 1.0f;
+            }
+
+            float eased =
+                t * t * (3.0f - 2.0f * t);
+
+            float pitch =
+                tween.from + (tween.to - tween.from) * eased;
+
+            SetMusicPitchValue(
+                id,
+                pitch
+            );
+
+            if(t >= 1.0f)
+            {
+                tween.active = false;
             }
         }
     }
@@ -307,9 +359,85 @@ public:
         ownsAudioDevice = false;
     }
 
+    static void SetMusicPitchValue(
+        const std::string& id,
+        float pitch
+    )
+    {
+        Music& music =
+            GetMusic(id);
+
+        musicPitches[id] = pitch;
+
+        SetMusicPitch(
+            music,
+            pitch
+        );
+    }
+
+    static void StartMusicPitchTransition(
+        const std::string& id,
+        float targetPitch,
+        float duration
+    )
+    {
+        Music& music =
+            GetMusic(id);
+
+        (void)music;
+
+        float currentPitch = 1.0f;
+
+        auto pitchIt =
+            musicPitches.find(id);
+
+        if(pitchIt != musicPitches.end())
+        {
+            currentPitch = pitchIt->second;
+        }
+
+        MusicPitchTween tween{};
+        tween.active = true;
+        tween.from = currentPitch;
+        tween.to = targetPitch;
+        tween.timer = 0.0f;
+        tween.duration = std::max(0.01f, duration);
+
+        musicPitchTweens[id] = tween;
+    }
+
+    static void RestartMusic(
+        const std::string& id,
+        float volume = 1.0f,
+        float pitch = 1.0f
+    )
+    {
+        Music& music =
+            GetMusic(id);
+
+        StopMusicStream(music);
+
+        SetMusicVolume(
+            music,
+            volume
+        );
+
+        SetMusicPitch(
+            music,
+            pitch
+        );
+
+        musicPitches[id] = pitch;
+
+        PlayMusicStream(music);
+
+        currentMusicId = id;
+    }
 private:
     inline static std::unordered_map<std::string, Sound> sounds;
     inline static std::unordered_map<std::string, Music> musicTracks;
+    inline static std::unordered_map<std::string, float> musicPitches;
+    inline static std::unordered_map<std::string, MusicPitchTween> musicPitchTweens;
 
     inline static std::string currentMusicId;
 

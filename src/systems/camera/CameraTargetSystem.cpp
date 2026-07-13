@@ -37,45 +37,11 @@ static SkillCheckCameraShakeSettings GetSkillCheckShakeSettings(
         };
     }
 
-    // Small bonus.
-    if(power <= basePower * 1.25f)
-    {
-        return SkillCheckCameraShakeSettings{
-            0.14f,
-            24.0f,
-            4.f,
-            0.0f
-        };
-    }
-
-    // Medium bonus.
-    if(power <= basePower * 1.50f)
-    {
-        return SkillCheckCameraShakeSettings{
-            0.22f,
-            30.0f,
-            5.f,
-            0.f
-        };
-    }
-
-    // High bonus.
-    if(power <= basePower * 1.80f)
-    {
-        return SkillCheckCameraShakeSettings{
-            0.32f,
-            62.0f,
-            3.0f,
-            0.16f
-        };
-    }
-
-    // Very high bonus.
     return SkillCheckCameraShakeSettings{
-        0.42f,
-        68.0f,
-        4.0f,
-        0.22f
+        0.15f, // intensity
+        5.0f, // Frequency
+        10.f + (strike.skillCheckCounter * 0.7f), // Max Offset
+        0.25f // Max rotation
     };
 }
 

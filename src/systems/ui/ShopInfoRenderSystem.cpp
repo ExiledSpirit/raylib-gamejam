@@ -4,6 +4,7 @@
 #include "../../resources/ShopResource.hpp"
 #include "../../resources/SkillCheckResource.hpp"
 #include "../../resources/PowerUpDatabaseResource.hpp"
+#include "../../resources/EconomyResource.hpp"
 
 #include "../../utils/PowerUpOwnershipHelper.hpp"
 
@@ -122,12 +123,14 @@ static void DrawRichTextLines(
     }
 }
 static void DrawPowerUpPanel(
+    const EconomyResource& economy,
     const PowerUpDefinition& power,
     const std::string& displayName,
     Vector2 position,
     bool hovered
 )
 {
+    bool canPay = economy.gold > power.price;
     Font font =
         GetFontDefault();
 
@@ -135,7 +138,7 @@ static void DrawPowerUpPanel(
     constexpr float panelHeight = 112.0f;
 
     Color backgroundColor =
-        hovered
+        hovered && canPay
             ? Color{34, 30, 48, 245}
             : Color{20, 18, 28, 225};
 
@@ -143,6 +146,8 @@ static void DrawPowerUpPanel(
         hovered
             ? Color{255, 220, 120, 255}
             : Color{90, 90, 110, 255};
+
+    borderColor = canPay ? borderColor : GRAY;
 
     Rectangle panelRect{
         position.x,
@@ -204,7 +209,7 @@ static void DrawPowerUpPanel(
         position.x + panelWidth - priceSize.x - 8.0f,
         cursor.y,
         20.0f,
-        GOLD
+        canPay ? GOLD : GRAY
     );
 
     cursor.y += 17.0f;
@@ -233,10 +238,12 @@ void ShopInfoRenderSystem(World& world)
     auto& database = world.GetResource<PowerUpDatabaseResource>();
     auto& skill = world.GetResource<SkillCheckResource>();
     auto& owned = world.GetResource<PlayerPowerUpsResource>();
+    auto& economy = world.GetResource<EconomyResource>();
 
     const SkillCheckTarget* hovered =
         GetCurrentHoveredSkillCheckTarget(skill);
 
+    DrawText(TextFormat("$%i", economy.gold), 50, 50, 20, GOLD);
     DrawText(TextFormat("REROLL $%i", shop.rerollCost), 292, 54, 12, GOLD);
     DrawText("EXIT", 304, 300, 12, RED);
 
@@ -274,6 +281,7 @@ void ShopInfoRenderSystem(World& world)
                 : Vector2{430.0f, 120.0f};
 
         DrawPowerUpPanel(
+            economy,
             *power,
             displayName,
             panelPosition,

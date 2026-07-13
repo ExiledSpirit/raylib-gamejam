@@ -9,6 +9,6 @@ enum class GameScreen
 
 struct GameScreenResource
 {
-    GameScreen current = GameScreen::Playing;
-    GameScreen target = GameScreen::Playing;
+    GameScreen current = GameScreen::MainMenu;
+    GameScreen target = GameScreen::MainMenu;
 };

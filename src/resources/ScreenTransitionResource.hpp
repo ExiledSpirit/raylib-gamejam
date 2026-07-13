@@ -39,7 +39,7 @@ struct ScreenTransitionResource
     ScreenTransitionPhase phase = ScreenTransitionPhase::None;
     ScreenTransitionAction action = ScreenTransitionAction::None;
 
-    GameScreen targetScreen = GameScreen::Playing;
+    GameScreen targetScreen = GameScreen::MainMenu;
 
     float timer = 0.0f;
     float coverDuration = 0.75f;

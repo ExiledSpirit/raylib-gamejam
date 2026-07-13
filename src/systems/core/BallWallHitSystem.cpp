@@ -114,7 +114,6 @@ void BallWallHitSystem(World& world)
             // AudioHelper::PlaySfx(AudioIds::WallHit);
             AudioHelper::PlaySfx(AudioIds::Mult, 3.0f, 2.5f);
 
-            // TODO: shake condicional
             if (speedMeters > 50) {
                 AddCameraShake(
                     camera,

@@ -22,12 +22,16 @@
 #include "../resources/PowerUpDatabaseResource.hpp"
 #include "../resources/PlayerPowerUpsResource.hpp"
 #include "../resources/ShopResource.hpp"
+#include "../resources/RunEndAnimationResource.hpp"
+#include "../resources/MainMenuIntroResource.hpp"
 #include "../prefabs/PrefabRegistry.hpp"
 #include "../prefabs/RegisterPrefabs.hpp"
 #include <physics/PhysicsWorldResource.hpp>
 #include <box2d/box2d.h>
 #include "../utils/CalculateViewport.hpp"
 #include "../factories/PowerUpFactory.hpp"
+
+#include "../utils/MainMenuIntroHelper.hpp"
 
 void InitializeResources(World& world) {
     LoadGameScreenResource(world);
@@ -168,6 +172,11 @@ void InitializeGameMechanicsResources(World& world) {
 void LoadGameStateResources(World& world) {
     world.InsertResource<GameStateResource>();
     world.InsertResource<PlayerStatsResource>();
+    world.InsertResource<RunEndAnimationResource>();
+    world.InsertResource<MainMenuIntroResource>();
+
+    LoadMainMenuIntroSpritesheet(world);
+    ResetMainMenuIntro(world);
 }
 
 void LoadPrefabRegistry(World& world) {

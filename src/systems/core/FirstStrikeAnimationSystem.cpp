@@ -48,6 +48,12 @@ void FirstStrikeAnimationSystem(World& world)
         {
             if(run.phaseTimer >= 1.0f)
             {
+                if(run.ballsRemaining <= 0)
+                {
+                    SetRunPhase(run, RunPhase::MapLost);
+                    return;
+                }
+
                 SetRunPhase(run, RunPhase::WaitingToDropBall);
             }
 

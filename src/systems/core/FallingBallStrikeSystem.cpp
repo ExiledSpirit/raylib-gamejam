@@ -124,11 +124,36 @@ void FallingBallStrikeSystem(World& world)
 
             if(quality == StrikeQuality::Perfect)
             {
+                CreateFloatingText(
+                    world,
+                    "PERFECT!!",
+                    Vector2{
+                        strike.playerPosition.x + 8.0f,
+                        strike.playerPosition.y - 18.0f
+                    },
+                    GOLD,
+                    1.5f,
+                    16.f
+                );
+
+                AudioHelper::PlaySfx(AudioIds::FirstStrikePerfect, 0.3f, 1.f);
+
                 strike.finalPowerMultiplier =
                     stats.perfectFirstStrikeMultiplier;
             }
             else
             {
+                CreateFloatingText(
+                    world,
+                    "Good!",
+                    Vector2{
+                        strike.playerPosition.x + 8.0f,
+                        strike.playerPosition.y - 18.0f
+                    },
+                    GOLD,
+                    1.5f,
+                    16.f
+                );
                 strike.finalPowerMultiplier =
                     stats.goodFirstStrikeMultiplier;
             }

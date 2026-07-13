@@ -6,6 +6,8 @@
 #include "../debugs/DebugUiSystem.hpp"
 #include "RewardPopupRenderSystem.hpp"
 #include "FloatingTextRenderSystem.hpp"
+#include "DropBallPromptRenderSystem.hpp"
+#include "RunEndHudSystem.hpp"
 
 void PlayingUiSystem(World& world)
 {
@@ -17,7 +19,9 @@ void PlayingUiSystem(World& world)
     }
 
     GameHudSystem(world);
+    DropBallPromptRenderSystem(world);
     SkillCheckUiSystem(world);
+    RunEndHudSystem(world);
     FloatingTextRenderSystem(world);
     // DebugUiSystem(world);
     RewardPopupRenderSystem(world);

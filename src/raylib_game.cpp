@@ -7,10 +7,12 @@
 #include <physics/PhysicsStepSystem.hpp>
 #include "./systems/sfx/UpdateMusicSystem.hpp"
 #include "./systems/startup/GameStartupSystem.hpp"
+#include "./systems/core/MainMenuIntroSystem.hpp"
 #include "./systems/core/ShotEndSystem.hpp"
 #include "./systems/core/BallScoreSystem.hpp"
 #include "./systems/core/BallPhysicsSyncSystem.hpp"
 
+#include "./systems/core/MainMenuInputSystem.hpp"
 #include "./systems/core/StartDropBallSystem.hpp"
 #include "./systems/core/FallingBallStrikeSystem.hpp"
 #include "./systems/core/FirstStrikeAnimationSystem.hpp"
@@ -20,21 +22,25 @@
 #include "./systems/core/LastStrikeAnimationSystem.hpp"
 #include "./systems/core/BallWallHitSystem.hpp"
 #include "./systems/core/BallLowSpeedDampingSystem.hpp"
+#include "./systems/core/RunEndInputSystem.hpp"
 
 #include "./systems/animation/PlayerAnimationSystem.hpp"
 #include "./systems/animation/AnimationSystem.hpp"
 
 #include "./systems/render/PlayingSceneRenderSystem.hpp"
 #include "./systems/render/ShopSceneRenderSystem.hpp"
+#include "./systems/render/MainMenuSceneRenderSystem.hpp"
 
 #include "./systems/ui/HudAnimationSystem.hpp"
 #include "./systems/ui/HudPayoutSystem.hpp"
 #include "./systems/ui/RewardPopupSystem.hpp"
 #include "./systems/ui/FloatingTextSystem.hpp"
 #include "./systems/ui/PlayingUiSystem.hpp"
+#include "./systems/ui/MainMenuUiSystem.hpp"
 #include "./systems/ui/ScreenTransitionSystem.hpp"
 #include "./systems/ui/ScreenTransitionRenderSystem.hpp"
 #include "./systems/ui/ShopUiSystem.hpp"
+#include "./systems/ui/RunEndAnimationSystem.hpp"
 
 #include "./systems/camera/CameraTargetSystem.hpp"
 #include "./systems/camera/CameraUpdateSystem.hpp"
@@ -49,7 +55,7 @@ int main()
 {
     ChangeDirectory(GetApplicationDirectory());
     AppConfig config = AppConfig();
-    config.title = "MY BASEBALL BAT";
+    config.title = "TOY OUT";
     config.internalHeight = 360;
     config.internalWidth = 640;
     config.windowHeight = 720;
@@ -64,6 +70,8 @@ int main()
 
     app.AddStartupSystem(GameStartupSystem);
 
+    app.AddSystem(Stage::Update, MainMenuIntroSystem);
+    app.AddSystem(Stage::Update, MainMenuInputSystem);
     app.AddSystem(Stage::Update, StartDropBallSystem);
     app.AddSystem(Stage::Update, FallingBallStrikeSystem);
     app.AddSystem(Stage::Update, FirstStrikeAnimationSystem);
@@ -71,6 +79,7 @@ int main()
     app.AddSystem(Stage::Update, LaunchSkillCheckResolverSystem);
     app.AddSystem(Stage::Update, ShopSkillCheckResolverSystem);
     app.AddSystem(Stage::Update, LastStrikeAnimationSystem);
+    app.AddSystem(Stage::Update, RunEndInputSystem);
 
     app.AddSystem(Stage::Update, PlayerAnimationSystem);
     app.AddSystem(Stage::Update, AnimationSystem);
@@ -86,6 +95,7 @@ int main()
     app.AddSystem(Stage::Update, HudAnimationSystem);
     app.AddSystem(Stage::Update, HudPayoutSystem);
     app.AddSystem(Stage::Update, RewardPopupSystem);
+    app.AddSystem(Stage::Update, RunEndAnimationSystem);
     app.AddSystem(Stage::Update, ShotEndSystem);
 
     app.AddSystem(Stage::Update, CameraTargetSystem);
@@ -93,8 +103,8 @@ int main()
     app.AddSystem(Stage::Update, ScreenTransitionSystem);
 
     // MENU
-    // app.AddSystem(Stage::RenderScene, MainMenuSceneRenderSystem);
-    // app.AddSystem(Stage::RenderUi, MainMenuShopUiSystem);
+    app.AddSystem(Stage::RenderScene, MainMenuSceneRenderSystem);
+    app.AddSystem(Stage::RenderUi, MainMenuUiSystem);
 
     // PLAYING
     app.AddSystem(Stage::RenderScene, PlayingSceneRenderSystem);

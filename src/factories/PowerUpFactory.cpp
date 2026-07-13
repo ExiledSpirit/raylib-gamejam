@@ -27,7 +27,7 @@ PowerUpDefinition CreateHeavyBatPowerUp()
             {
                 Good("Increase "),
                 T(" bat strength by "),
-                Good(" 200%")
+                Good(" 200% ")
             }
         },
         RichTextLine{
@@ -124,12 +124,12 @@ PowerUpDefinition CreateGiantBallPowerUp()
         RichTextLine{
             {
                 T("Increases ball "),
-                Good("size"),
+                Good(" size"),
                 T(" by "),
-                Good("+35%"),
+                Good(" +35% "),
                 T(".")
             }
-        }
+        },
     };
 
     return power;
