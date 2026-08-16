@@ -36,9 +36,16 @@ void ShotEndSystem(World& world)
 
     std::vector<entt::entity> ballsToDestroy;
 
+    bool shouldStopBalls = IsKeyPressed(KEY_F1);
+
     for(auto [entity, ball, physicsBody, score] : view.each())
     {
         (void)ball;
+
+        if (shouldStopBalls) {
+            allBallsStopped = true;
+            continue;
+        }
 
         hasAnyBall = true;
 
@@ -53,8 +60,7 @@ void ShotEndSystem(World& world)
             allBallsStopped = false;
         }
 
-        score.chips =
-            static_cast<int>(score.distanceMeters);
+        score.chips = score.distanceMeters;
 
         score.mult =
             1 + score.wallHits;

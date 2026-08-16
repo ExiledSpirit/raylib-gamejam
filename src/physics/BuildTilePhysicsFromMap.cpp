@@ -6,24 +6,39 @@
 
 #include <box2d/box2d.h>
 
-static b2BodyId CreateStaticBox(
+static b2BodyId CreateStaticTileRect(
     b2WorldId worldId,
-    b2Vec2 center,
-    float halfWidth,
-    float halfHeight
+    int x,
+    int y,
+    int width,
+    int height
 )
 {
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = b2_staticBody;
-    bodyDef.position = center;
 
-    b2BodyId bodyId = b2CreateBody(worldId, &bodyDef);
+    bodyDef.position = b2Vec2{
+        static_cast<float>(x) + static_cast<float>(width) * 0.5f,
+        static_cast<float>(y) + static_cast<float>(height) * 0.5f
+    };
 
-    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    b2BodyId bodyId =
+        b2CreateBody(worldId, &bodyDef);
+
+    b2ShapeDef shapeDef =
+        b2DefaultShapeDef();
+
     shapeDef.material.friction = 0.4f;
     shapeDef.material.restitution = 0.9f;
 
-    b2Polygon box = b2MakeBox(halfWidth, halfHeight);
+    // Important if your wall hit system uses Box2D hit events.
+    shapeDef.enableHitEvents = true;
+
+    b2Polygon box =
+        b2MakeBox(
+            static_cast<float>(width) * 0.5f,
+            static_cast<float>(height) * 0.5f
+        );
 
     b2CreatePolygonShape(
         bodyId,
@@ -42,26 +57,35 @@ void BuildTilePhysicsFromMap(World& world)
     auto& map =
         world.GetResource<TileMapResource>();
 
-    for(int y = 0; y < map.height; ++y)
-    {
-        for(int x = 0; x < map.width; ++x)
-        {
-            const Tile& tile = map.Get(x, y);
+    CreateStaticTileRect(
+        physics.worldId,
+        0,
+        0,
+        map.width,
+        1
+    );
 
-            if(tile.id != TileId::Wall)
-            {
-                continue;
-            }
+    CreateStaticTileRect(
+        physics.worldId,
+        0,
+        map.height - 1,
+        map.width,
+        1
+    );
 
-            CreateStaticBox(
-                physics.worldId,
-                b2Vec2{
-                    static_cast<float>(x) + 0.5f,
-                    static_cast<float>(y) + 0.5f
-                },
-                0.5f,
-                0.5f
-            );
-        }
-    }
+    CreateStaticTileRect(
+        physics.worldId,
+        0,
+        1,
+        1,
+        map.height - 2
+    );
+
+    CreateStaticTileRect(
+        physics.worldId,
+        map.width - 1,
+        1,
+        1,
+        map.height - 2
+    );
 }

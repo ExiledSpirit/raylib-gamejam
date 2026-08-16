@@ -6,7 +6,6 @@ struct MainMenuIntroResource
 {
     Texture2D spritesheet{};
     bool loaded = false;
-
     bool active = false;
     bool finished = false;
 
@@ -16,7 +15,6 @@ struct MainMenuIntroResource
 
     float startDelay = 1.5f;
     float timer = 0.0f;
-
     float frameTimer = 0.0f;
     float frameDuration = 1.0f / 24.0f;
 
@@ -26,6 +24,8 @@ struct MainMenuIntroResource
     int frameWidth = 640;
     int frameHeight = 360;
 
+    int columns = 7;
+
     int glassFrame = 2;
-    int musicFrame = 29;
+    int musicFrame = 25;
 };

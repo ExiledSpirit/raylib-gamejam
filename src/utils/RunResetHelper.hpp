@@ -107,10 +107,15 @@ inline void ResetGameRun(World& world)
 
     campaign = CampaignResource{};
 
-    economy.gold = 0;
+    economy.gold = 5;
     economy.powerGoldThisLevel = 0;
 
     owned.stacks.clear();
+    // owned.stacks.push_back(PlayerPowerUpStack{.powerUpId="giant_ball", .count=24});
+    // owned.stacks.push_back(PlayerPowerUpStack{.powerUpId="concentration_pill", .count=12});
+    // owned.stacks.push_back(PlayerPowerUpStack{.powerUpId="anger", .count=30000});
+    // owned.stacks.push_back(PlayerPowerUpStack{.powerUpId="high_risk_high_reward", .count=300000});
+    // owned.stacks.push_back(PlayerPowerUpStack{.powerUpId="ball_printer", .count=400});
 
     stats.ResetToBase();
 
@@ -123,6 +128,8 @@ inline void ResetGameRun(World& world)
 
     shop.slots.clear();
     shop.rerollCost = 1;
+
+    // RecalculatePlayerStats(world);s
 
     EndSkillCheck(skill);
 

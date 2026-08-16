@@ -14,7 +14,7 @@ PowerUpDefinition CreateHeavyBatPowerUp()
 
     power.modifiers.push_back({
         PowerUpModifierType::BasePowerMultiplier,
-        1.f
+        5.f
     });
 
     power.modifiers.push_back({
@@ -130,6 +130,11 @@ PowerUpDefinition CreateGiantBallPowerUp()
                 T(".")
             }
         },
+        RichTextLine{
+            {
+                Muted("ball size influences mult")
+            }
+        },
     };
 
     return power;
@@ -158,7 +163,7 @@ PowerUpDefinition CreateMultiBallPowerUp()
     power.descriptionLines = {
         RichTextLine{
             {
-                T("Launches "),
+                T("Strikes "),
                 Good(" +1 "),
                 T(" ball.")
             }
@@ -187,7 +192,12 @@ PowerUpDefinition CreateConcentrationPillPowerUp()
         RichTextLine{
             {
                 Good("Increases "),
-                T(" Skill Check by "),
+                T(" Skill Check events "),
+            }
+        },
+        RichTextLine{
+            {
+                T(" by "),
                 Good(" +1"),
             }
         }

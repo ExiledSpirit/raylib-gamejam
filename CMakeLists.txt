@@ -49,6 +49,10 @@ FetchContent_MakeAvailable(
 # Our Project
 add_executable(${PROJECT_NAME})
 
+#target_link_options(${PROJECT_NAME} PRIVATE
+#    $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU>>:-mwindows>
+#)
+
 add_subdirectory(engine)
 add_subdirectory(src)
 
@@ -76,15 +80,26 @@ if (NOT "${PLATFORM}" STREQUAL "Web")
 endif()
 
 # Web Configurations
-if ("${PLATFORM}" STREQUAL "Web")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        SUFFIX ".html"
+if(EMSCRIPTEN)
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        PLATFORM_WEB
+        ASSETS_PATH=\"assets/\"
     )
 
-    target_link_options(${PROJECT_NAME}
-        PRIVATE
-            -sUSE_GLFW=3
-            "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/src/assets@assets"
+    target_link_options(${PROJECT_NAME} PRIVATE
+        -sUSE_GLFW=3
+        -sASYNCIFY
+        -sALLOW_MEMORY_GROWTH=1
+        -sINITIAL_MEMORY=134217728
+        -sSTACK_SIZE=1048576
+        --shell-file=${CMAKE_SOURCE_DIR}/platform/web/shell.html
+        --preload-file ${CMAKE_SOURCE_DIR}/src/assets@assets
+    )
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        ASSETS_PATH=\"assets/\"
     )
 endif()
 

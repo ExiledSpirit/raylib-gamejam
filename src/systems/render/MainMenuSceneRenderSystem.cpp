@@ -15,32 +15,25 @@ void MainMenuSceneRenderSystem(World& world)
         return;
     }
 
-    ClearBackground(BLACK);
-
     auto& intro =
         world.GetResource<MainMenuIntroResource>();
+
+    ClearBackground(BLACK);
 
     if(!intro.loaded || intro.spritesheet.id == 0)
     {
         return;
     }
 
-    int frameIndex =
-        intro.currentFrame;
+    int frameX =
+        intro.currentFrame % intro.columns;
 
-    if(frameIndex < 0)
-    {
-        frameIndex = 0;
-    }
-
-    if(frameIndex >= intro.frameCount)
-    {
-        frameIndex = intro.frameCount - 1;
-    }
+    int frameY =
+        intro.currentFrame / intro.columns;
 
     Rectangle source{
-        static_cast<float>(frameIndex * intro.frameWidth),
-        0.0f,
+        static_cast<float>(frameX * intro.frameWidth),
+        static_cast<float>(frameY * intro.frameHeight),
         static_cast<float>(intro.frameWidth),
         static_cast<float>(intro.frameHeight)
     };
@@ -48,8 +41,8 @@ void MainMenuSceneRenderSystem(World& world)
     Rectangle destination{
         0.0f,
         0.0f,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT
+        640.0f,
+        360.0f
     };
 
     DrawTexturePro(

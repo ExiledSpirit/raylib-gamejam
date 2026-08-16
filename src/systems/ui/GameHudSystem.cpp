@@ -9,6 +9,8 @@
 #include "../../components/ShotScore.hpp"
 #include "../../components/Ball.hpp"
 
+#include "../../utils/MathHelper.hpp"
+
 #include <raylib.h>
 
 #include <algorithm>
@@ -18,10 +20,10 @@
 struct ShotHudTotals
 {
     bool hasActiveShot = false;
-    int chips = 0;
+    __int128_t chips = 0;
     int wallHits = 0;
-    int mult = 0;
-    int finalScore = 0;
+    __int128_t mult = 0;
+    __int128_t finalScore = 0;
 };
 
 static ShotHudTotals GetCurrentShotTotals(World& world)
@@ -39,7 +41,7 @@ static ShotHudTotals GetCurrentShotTotals(World& world)
         totals.hasActiveShot = true;
 
         totals.chips += score.chips;
-        totals.wallHits += score.wallHits;
+        totals.wallHits += score.mult;
     }
 
     if(totals.hasActiveShot)
@@ -228,13 +230,13 @@ void GameHudSystem(World& world)
     ShotHudTotals shotTotals =
         GetCurrentShotTotals(world);
 
-    int chips =
+    __int128_t chips =
         shotTotals.chips;
 
-    int mult =
+    __int128_t mult =
         shotTotals.mult;
 
-    int displayedScore =
+    __int128_t displayedScore =
         run.currentScore;
 
     float progress = 0.0f;
@@ -257,7 +259,7 @@ void GameHudSystem(World& world)
 
     DrawPulsingTextRightAligned(
         fonts.hud,
-        std::to_string(chips),
+        FormatScore(chips),
         chipsRight,
         22.0f,
         hud.chipsPulse,
@@ -275,7 +277,7 @@ void GameHudSystem(World& world)
 
     DrawPulsingTextLeftAligned(
         fonts.hud,
-        std::to_string(mult),
+        FormatScore(mult),
         multLeft,
         22.0f,
         hud.multPulse,
@@ -287,7 +289,7 @@ void GameHudSystem(World& world)
     {
         DrawPulsingTextCentered(
             fonts.hud,
-            "+" + std::to_string(hud.payout.amount),
+            "+" + FormatScore(hud.payout.amount),
             hud.payout.position,
             18.0f,
             hud.payoutPulse,
@@ -393,7 +395,7 @@ void GameHudSystem(World& world)
     // Score text: only committed score, not preview score.
     DrawPulsingTextCentered(
         fonts.hud,
-        std::to_string(displayedScore) + " / " + std::to_string(run.requiredScore),
+        FormatScore(displayedScore) + " / " + FormatScore(run.requiredScore),
         Vector2{
             static_cast<float>(barX + (barW/2)),
             static_cast<float>(barY + (barH/2))

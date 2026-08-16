@@ -8,12 +8,12 @@ struct ShotScore
 
     float distanceMeters = 0.0f;
 
-    int chips = 0;
-    int lastDisplayedChips = 0;
+    __int128_t chips = 0;
+    __int128_t lastDisplayedChips = 0;
 
-    int wallHits = 0;
-    int mult = 1;
-    int finalScore = 0;
+    __int128_t wallHits = 0;
+    __int128_t mult = 1;
+    __int128_t finalScore = 0;
 
     float slowTimer = 0.0f;
     bool initialized = false;

@@ -130,7 +130,7 @@ static void DrawPowerUpPanel(
     bool hovered
 )
 {
-    bool canPay = economy.gold > power.price;
+    bool canPay = economy.gold >= power.price;
     Font font =
         GetFontDefault();
 

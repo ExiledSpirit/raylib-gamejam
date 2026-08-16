@@ -14,7 +14,7 @@ struct HudScorePayout
     bool active = false;
     bool applied = false;
 
-    int amount = 0;
+    __int128_t amount = 0;
 
     Vector2 startPosition{40.0f, 110.0f};
     Vector2 targetPosition{128.0f, 88.0f};

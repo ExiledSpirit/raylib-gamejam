@@ -53,7 +53,6 @@ static SkillCheckResult EvaluateSkillCheck(
     TraceLog(LOG_INFO, TextFormat("id = %s", result.id.c_str()));
     return result;
 }
-
 void SkillCheckSystem(World& world)
 {
     auto& skill =
@@ -75,23 +74,30 @@ void SkillCheckSystem(World& world)
     auto& input =
         world.GetResource<InputResource>();
 
+    if(skill.ignoreInputThisFrame)
+    {
+        skill.ignoreInputThisFrame = false;
+
+        skill.needleAngle =
+            WrapSkillCheckAngle(
+                skill.needleAngle +
+                skill.needleSpeed * time.deltaTime
+            );
+
+        return;
+    }
+
+    if(input.IsPressed("throw"))
+    {
+        skill.pendingResult =
+            EvaluateSkillCheck(skill);
+
+        return;
+    }
+
     skill.needleAngle =
         WrapSkillCheckAngle(
             skill.needleAngle +
             skill.needleSpeed * time.deltaTime
         );
-
-    if(skill.ignoreInputThisFrame)
-    {
-        skill.ignoreInputThisFrame = false;
-        return;
-    }
-
-    if(!input.IsPressed("throw"))
-    {
-        return;
-    }
-
-    skill.pendingResult =
-        EvaluateSkillCheck(skill);
 }

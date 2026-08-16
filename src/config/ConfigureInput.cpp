@@ -34,6 +34,6 @@ void ConfigureInput(World& world)
 
     /** Game */
     bindings.BindKeyboard(InputActionIds::Throw,  KEY_SPACE);
-
     bindings.BindGamepadButton(InputActionIds::Throw, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+    bindings.BindTouchAnywhere(InputActionIds::Throw);
 }

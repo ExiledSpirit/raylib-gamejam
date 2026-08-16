@@ -7,12 +7,12 @@ struct AppConfig
     int windowWidth = 1600;
     int windowHeight = 900;
 
-    int internalWidth = 512;
-    int internalHeight = 288;
+    int internalWidth = 640;
+    int internalHeight = 360;
 
-    const char* title = "Raylib Gamejam Engine";
+    const char* title = "TOY OUT";
 
-    int targetFps = 60;
+    int targetFps = 120;
     int exitKey = KEY_APOSTROPHE;
 
     Font fontFamily;

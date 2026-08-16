@@ -2,6 +2,7 @@
 
 #include "../../resources/HudAnimationResource.hpp"
 #include "../../resources/RunResource.hpp"
+#include "../../resources/CampaignResource.hpp"
 #include "../../utils/PhaseHelper.hpp"
 #include "../../utils/LevelRewardUtils.hpp"
 
@@ -40,6 +41,7 @@ void HudPayoutSystem(World& world)
     auto& hud = world.GetResource<HudAnimationResource>();
     auto& run = world.GetResource<RunResource>();
     auto& time = world.GetResource<TimeResource>();
+    auto& campaign = world.GetResource<CampaignResource>();
 
     float dt = time.deltaTime;
 
@@ -109,6 +111,11 @@ void HudPayoutSystem(World& world)
         // - background shader intensity
         // - small camera shake
         // - bar flash
+        
+        if (campaign.act == campaign.maxActs && campaign.level == campaign.levelsPerAct) {
+            SetRunPhase(run, RunPhase::MapWon);
+            return;
+        }
         OpenLevelRewardPopup(world);
         SetRunPhase(run, RunPhase::LevelReward);
         return;

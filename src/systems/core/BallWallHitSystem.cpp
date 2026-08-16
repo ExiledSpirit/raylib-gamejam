@@ -7,6 +7,7 @@
 
 #include "../../resources/GameCameraResource.hpp"
 #include "../../resources/TileMapResource.hpp"
+#include "../../resources/PlayerStatsResource.hpp"
 #include "../../utils/CameraShakeUtils.hpp"
 
 #include "../../factories/FloatingTextFactory.hpp"
@@ -64,6 +65,8 @@ void BallWallHitSystem(World& world)
 {
     auto& physicsWorld =
         world.GetResource<PhysicsWorldResource>();
+    auto& stats =
+        world.GetResource<PlayerStatsResource>();
 
     b2ContactEvents events =
         b2World_GetContactEvents(physicsWorld.worldId);
@@ -107,7 +110,8 @@ void BallWallHitSystem(World& world)
 
             int wallHitValue =
                 GetWallHitValue(speedPixels);
-            score.wallHits += wallHitValue;
+            float wallHitMultiplier = std::max(1.0f, stats.ballSizeMultiplier);
+            score.wallHits += std::floor(wallHitValue * wallHitMultiplier);
             score.mult = 1 + score.wallHits;
             score.finalScore = score.chips * score.mult;
 

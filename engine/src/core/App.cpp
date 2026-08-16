@@ -12,7 +12,10 @@
 
 #include "../ecs/resources/DisplayResource.hpp"
 #include "../ecs/resources/RenderTextureResources.hpp"
+#include "../ecs/resources/PostProcessResource.hpp"
 #include "../rendering/RenderPipelineSystems.hpp"
+
+#include "../helper/PostProcessHelper.hpp"
 
 #include <raylib.h>
 
@@ -34,6 +37,9 @@ static void InitializeCoreResources(
 
     world.InsertResource<DisplayResource>();
     world.InsertResource<RenderTextureResources>();
+
+    world.InsertResource<PostProcessResource>();
+    LoadPostProcess(world);
 
     auto& display =
         world.GetResource<DisplayResource>();
@@ -151,8 +157,7 @@ void App::Frame()
     float rawDeltaTime =
         GetFrameTime();
 
-    constexpr float maxDeltaTime =
-        1.0f / 30.0f;
+    float maxDeltaTime = 1.0f / 30.0f;
 
     time.deltaTime =
         std::min(rawDeltaTime, maxDeltaTime);

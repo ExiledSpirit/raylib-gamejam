@@ -2,6 +2,7 @@
 
 #include "../ecs/resources/DisplayResource.hpp"
 #include "../ecs/resources/RenderTextureResources.hpp"
+#include "../ecs/resources/PostProcessResource.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -133,39 +134,71 @@ void PresentRenderSystem(World& world)
     auto& rt =
         world.GetResource<RenderTextureResources>();
 
+    auto& post =
+        world.GetResource<PostProcessResource>();
+
     UpdateDisplayResource(world);
 
     BeginDrawing();
     ClearBackground(BLACK);
 
-    DrawTexturePro(
-        rt.finalOutput,
-        Rectangle{
-            0.0f,
-            0.0f,
-            static_cast<float>(rt.finalOutput.width),
-            -static_cast<float>(rt.finalOutput.height)
-        },
-        Rectangle{
-            display.viewportOffset.x,
-            display.viewportOffset.y,
-            display.viewportSize.x,
-            display.viewportSize.y
-        },
-        Vector2{0.0f, 0.0f},
+    Rectangle sourceRect{
         0.0f,
-        WHITE
-    );
+        0.0f,
+        static_cast<float>(rt.finalOutput.width),
+        -static_cast<float>(rt.finalOutput.height)
+    };
+
+    Rectangle destinationRect{
+        display.viewportOffset.x,
+        display.viewportOffset.y,
+        display.viewportSize.x,
+        display.viewportSize.y
+    };
+
+    if(post.enabled && post.loaded && post.shader.id != 0)
+    {
+        BeginShaderMode(post.shader);
+
+        DrawTexturePro(
+            rt.finalOutput,
+            sourceRect,
+            destinationRect,
+            Vector2{0.0f, 0.0f},
+            0.0f,
+            WHITE
+        );
+
+        EndShaderMode();
+    }
+    else
+    {
+        DrawTexturePro(
+            rt.finalOutput,
+            sourceRect,
+            destinationRect,
+            Vector2{0.0f, 0.0f},
+            0.0f,
+            WHITE
+        );
+    }
 
     EndDrawing();
 }
 
 void ShutdownRenderSystem(World& world)
 {
-    auto& rt =
-        world.GetResource<RenderTextureResources>();
+    auto& rt = world.GetResource<RenderTextureResources>();
+    auto& post = world.GetResource<PostProcessResource>();
 
     UnloadRenderTexture(rt.scene);
     UnloadRenderTexture(rt.ui);
     UnloadRenderTexture(rt.composite);
+
+    if(post.loaded && post.shader.id != 0)
+    {
+        UnloadShader(post.shader);
+    }
+
+    post = PostProcessResource{};
 }

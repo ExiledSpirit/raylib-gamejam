@@ -38,7 +38,7 @@ entt::entity CreateIncomingBall(World& world)
 
     entt::entity entity = world.registry.create();
 
-    auto positionMeters = b2Vec2{3.0f, 0.0f};
+    auto positionMeters = b2Vec2{3.4f, 1.f};
     Vector2 positionPixels = ArenaToWorldPixels(map, positionMeters);
 
     auto& transform = world.registry.emplace<Transform2D>(entity);
